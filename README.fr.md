@@ -24,6 +24,7 @@ Intérieur et extérieur sont dessinés à leurs tailles relatives réelles.
 - **Deux modules, une card** : la station intérieure haute et le module extérieur court, à leurs proportions réelles. Vous choisissez `indoor` ou `outdoor`, le dessin suit.
 - **La fente s'allume**, comme sur la vraie station intérieure : vert / orange / rouge selon le CO₂. Le module extérieur n'a pas de LED, il ne s'allume donc jamais. Seuils configurables, désactivable avec `show_glow: false`.
 - **Compléter depuis l'appareil** : choisissez le capteur de température et l'éditeur propose un bouton qui remplit humidité, CO₂, bruit, pression, batterie et connectivité depuis le même appareil.
+- **Uniquement les options pertinentes** : un champ n'apparaît que si le type de module possède cette mesure *et* que l'appareil expose l'entité — pas de batterie sur une station intérieure sur secteur, pas de CO₂ / bruit / pression sur le module extérieur. Chaque liste est filtrée sur le `device_class` correspondant.
 - **Mesures en tuiles** : température en gros avec sa flèche de tendance, puis humidité, CO₂, bruit et pression — chacune colorée hors de la plage de confort, chacune ouvrant sa fiche au clic.
 - **Batterie et connectivité** dans les coins (niveau coloré, icône wifi barrée en rouge hors ligne).
 - **Tracé 24 h dépliable** : `show_history` ajoute un bouton discret qui déplie la courbe 24 h de la température — ou de n'importe quel autre capteur via `history_entity`.

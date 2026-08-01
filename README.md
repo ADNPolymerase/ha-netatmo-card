@@ -26,6 +26,7 @@ and outdoor are drawn at their real relative sizes.
 - **Two modules, one card**: the tall indoor station and the short outdoor module, at their real proportions. You pick `indoor` or `outdoor` and the drawing follows.
 - **The front groove lights up**, like the real indoor station: green / amber / red by CO₂. The outdoor module has no LED, so it never lights up. Thresholds are configurable; turn it off with `show_glow: false`.
 - **Fill in from the device**: pick the temperature sensor and the editor offers one button that fills in humidity, CO₂, noise, pressure, battery and connectivity from the same device.
+- **Only the relevant options**: the editor shows a field when the module type has that reading *and* the device exposes it — no battery field on a mains-powered indoor station, no CO₂ / noise / pressure on the outdoor module. Every picker is narrowed to the matching `device_class`.
 - **Readings as tiles**: temperature in large type with its trend arrow, then humidity, CO₂, noise and pressure — each colored when it leaves the comfortable range, each opening its own more-info on tap.
 - **Battery and connectivity** in the card corners (colored level, wifi icon crossed out in red when offline).
 - **Collapsible 24 h history**: `show_history` adds a discreet button that expands a 24 h curve of the temperature — or of any other sensor via `history_entity`.
