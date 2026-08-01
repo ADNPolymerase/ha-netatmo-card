@@ -1,0 +1,6 @@
+{
+  "name": "Netatmo Card",
+  "render_readme": true,
+  "filename": "netatmo-card.js",
+  "homeassistant": "2024.1.0"
+}
