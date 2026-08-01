@@ -17,10 +17,10 @@
 Multilingual (6 languages: EN, FR, DE, ES, IT, NL — auto-detected from Home Assistant).
 
 A Lovelace card that draws the **weather station modules** the way they look, with their
-readings alongside. Four modules: the indoor station and the outdoor one as matte anodised
-cylinders with their recessed front groove, the rain gauge with its clear collector and black
-funnel, and the anemometer with its two glossy discs. The indoor groove lights up with air
-quality, like the real one.
+readings alongside. Five modules: the indoor station, the additional indoor module and the
+outdoor one as matte anodised cylinders with their recessed front groove, each at its real
+height, the rain gauge with its clear collector and black funnel, and the anemometer with its
+two glossy discs. The indoor grooves light up with air quality, like the real ones.
 
 > 🇫🇷 [Lire en français](README.fr.md)
 
@@ -28,10 +28,11 @@ quality, like the real one.
 
 ## Features
 
-- **Four modules, one card**: `indoor`, `outdoor`, `rain` and `wind`. You pick the type, the drawing and the fields follow. Indoor and outdoor share a diameter and differ in height, exactly like the real pair.
+- **Five modules, one card**: `indoor`, `indoor_extra`, `outdoor`, `rain` and `wind`. You pick the type, the drawing and the fields follow. The three cylinders share a diameter and differ in height, exactly like the real ones: 155 mm for the station, 105 mm outdoors, 92 mm for the additional indoor module.
+- **Additional indoor module**: temperature, humidity and CO₂ with a battery, and no noise or pressure, because that module does not measure them.
 - **Rain gauge**: daily rainfall in large type, with the previous hour and the rain since the last reading as tiles.
 - **Anemometer**: wind speed with a vane arrow pointing where the wind blows, gust speed and direction in degrees with a cardinal.
-- **The front groove lights up**, like the real indoor station: green / amber / red by CO₂. The outdoor module has no LED, so it never lights up. Thresholds are configurable; turn it off with `show_glow: false`.
+- **The front groove lights up** on both indoor modules, like the real ones: green / amber / red by CO₂. The outdoor module has no LED, so it never lights up. Thresholds are configurable; turn it off with `show_glow: false`.
 - **Fill in from the device**: pick the temperature sensor and the editor offers one button that fills in humidity, CO₂, noise, pressure, battery and connectivity from the same device.
 - **Only the relevant options**: the editor shows a field when the module type has that reading *and* the device exposes it — no battery field on a mains-powered indoor station, no CO₂ / noise / pressure on the outdoor module. Every picker is narrowed to the matching `device_class`.
 - **Readings as tiles**: temperature in large type with its trend arrow, then humidity, CO₂, noise and pressure — each colored when it leaves the comfortable range, each opening its own more-info on tap.
@@ -61,7 +62,7 @@ Manual alternative: copy `netatmo-card.js` from the [latest release](https://git
 ## Usage
 
 Add the card from the dashboard UI (search "Netatmo") — a temperature sensor is auto-detected,
-and the editor offers to fill in the rest of the module. Pick indoor or outdoor.
+and the editor offers to fill in the rest of the module. Pick the module type first.
 Or in YAML:
 
 ```yaml
@@ -79,7 +80,7 @@ label: Hallway
 | Option | Default | Description |
 |---|---|---|
 | `entity` | **required** | Temperature sensor — the card's main value |
-| `module_type` | `indoor` | `indoor`, `outdoor`, `rain` or `wind` — sets which module is drawn |
+| `module_type` | `indoor` | `indoor`, `indoor_extra`, `outdoor`, `rain` or `wind` — sets which module is drawn |
 | `name` | friendly name | Title shown next to the module |
 | `label` | — | Subtitle under the value (e.g. the room) |
 | `humidity_entity` | — | Humidity, shown as a tile |
@@ -94,8 +95,8 @@ label: Hallway
 | `battery_entity` | — | Battery sensor shown top-right |
 | `connectivity_entity` | — | Connectivity sensor shown top-left |
 | `decimals` | `1` | Decimals for the temperature |
-| `body_color` | `aluminium` | `aluminium`, `sand`, `mint` or `graphite` (indoor and outdoor only) |
-| `show_glow` | `true` | Light up the groove with air quality (indoor module only) |
+| `body_color` | `aluminium` | `aluminium`, `sand`, `mint` or `graphite` (the three cylinders only) |
+| `show_glow` | `true` | Light up the groove with air quality (both indoor modules) |
 | `co2_good` | `1000` | Below this, the groove glows green (ppm) |
 | `co2_bad` | `2000` | Above this, the groove glows red (ppm) |
 | `accent_color` | `#2f8fd0` | Color of the 24 h curve |

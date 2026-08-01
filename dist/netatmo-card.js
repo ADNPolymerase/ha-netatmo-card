@@ -11,7 +11,7 @@ const NT_LANGNAMES = { en: "English", fr: "Français", de: "Deutsch", es: "Espa�
 const NT_T = {
   en: { entity: "Temperature sensor", name: "Name", label: "Subtitle", decimals: "Decimals", language: "Language", auto: "Auto",
     unavailable: "Unavailable",
-    modType: "Module type", mtIndoor: "Indoor", mtOutdoor: "Outdoor", mtRain: "Rain gauge", mtWind: "Anemometer",
+    modType: "Module type", mtIndoor: "Indoor station", mtIndoorExtra: "Additional indoor module", mtOutdoor: "Outdoor", mtRain: "Rain gauge", mtWind: "Anemometer",
     entRain: "Daily rainfall sensor", entWind: "Wind speed sensor",
     rainHour: "Rain in the previous hour", rainRate: "Rain since last reading",
     gust: "Gust speed entity", windDir: "Wind direction entity",
@@ -28,7 +28,7 @@ const NT_T = {
     filled: "Filled in: ", fillNone: "Nothing more to fill in." },
   fr: { entity: "Capteur de température", name: "Nom", label: "Sous-titre", decimals: "Décimales", language: "Langue", auto: "Auto",
     unavailable: "Indisponible",
-    modType: "Type de module", mtIndoor: "Intérieur", mtOutdoor: "Extérieur", mtRain: "Pluviomètre", mtWind: "Anémomètre",
+    modType: "Type de module", mtIndoor: "Station intérieure", mtIndoorExtra: "Module intérieur supplémentaire", mtOutdoor: "Extérieur", mtRain: "Pluviomètre", mtWind: "Anémomètre",
     entRain: "Capteur de pluie du jour", entWind: "Capteur de vitesse du vent",
     rainHour: "Pluie de l'heure précédente", rainRate: "Pluie depuis le dernier relevé",
     gust: "Entité rafales", windDir: "Entité direction du vent",
@@ -45,7 +45,7 @@ const NT_T = {
     filled: "Complété : ", fillNone: "Rien de plus à compléter." },
   de: { entity: "Temperatursensor", name: "Name", label: "Untertitel", decimals: "Dezimalstellen", language: "Sprache", auto: "Auto",
     unavailable: "Nicht verfügbar",
-    modType: "Modultyp", mtIndoor: "Innen", mtOutdoor: "Außen", mtRain: "Regenmesser", mtWind: "Windmesser",
+    modType: "Modultyp", mtIndoor: "Innenstation", mtIndoorExtra: "Zusätzliches Innenmodul", mtOutdoor: "Außen", mtRain: "Regenmesser", mtWind: "Windmesser",
     entRain: "Regensensor (Tagessumme)", entWind: "Windgeschwindigkeitssensor",
     rainHour: "Regen in der letzten Stunde", rainRate: "Regen seit der letzten Messung",
     gust: "Böen-Entität", windDir: "Windrichtungs-Entität",
@@ -62,7 +62,7 @@ const NT_T = {
     filled: "Übernommen: ", fillNone: "Nichts weiter zu übernehmen." },
   es: { entity: "Sensor de temperatura", name: "Nombre", label: "Subtítulo", decimals: "Decimales", language: "Idioma", auto: "Auto",
     unavailable: "No disponible",
-    modType: "Tipo de módulo", mtIndoor: "Interior", mtOutdoor: "Exterior", mtRain: "Pluviómetro", mtWind: "Anemómetro",
+    modType: "Tipo de módulo", mtIndoor: "Estación interior", mtIndoorExtra: "Módulo interior adicional", mtOutdoor: "Exterior", mtRain: "Pluviómetro", mtWind: "Anemómetro",
     entRain: "Sensor de lluvia del día", entWind: "Sensor de velocidad del viento",
     rainHour: "Lluvia en la hora anterior", rainRate: "Lluvia desde la última lectura",
     gust: "Entidad de rachas", windDir: "Entidad de dirección del viento",
@@ -79,7 +79,7 @@ const NT_T = {
     filled: "Completado: ", fillNone: "Nada más que completar." },
   it: { entity: "Sensore di temperatura", name: "Nome", label: "Sottotitolo", decimals: "Decimali", language: "Lingua", auto: "Auto",
     unavailable: "Non disponibile",
-    modType: "Tipo di modulo", mtIndoor: "Interno", mtOutdoor: "Esterno", mtRain: "Pluviometro", mtWind: "Anemometro",
+    modType: "Tipo di modulo", mtIndoor: "Stazione interna", mtIndoorExtra: "Modulo interno aggiuntivo", mtOutdoor: "Esterno", mtRain: "Pluviometro", mtWind: "Anemometro",
     entRain: "Sensore pioggia del giorno", entWind: "Sensore velocità del vento",
     rainHour: "Pioggia nell'ora precedente", rainRate: "Pioggia dall'ultima lettura",
     gust: "Entità raffiche", windDir: "Entità direzione del vento",
@@ -96,7 +96,7 @@ const NT_T = {
     filled: "Completato: ", fillNone: "Nulla da completare." },
   nl: { entity: "Temperatuursensor", name: "Naam", label: "Ondertitel", decimals: "Decimalen", language: "Taal", auto: "Auto",
     unavailable: "Niet beschikbaar",
-    modType: "Moduletype", mtIndoor: "Binnen", mtOutdoor: "Buiten", mtRain: "Regenmeter", mtWind: "Windmeter",
+    modType: "Moduletype", mtIndoor: "Binnenstation", mtIndoorExtra: "Extra binnenmodule", mtOutdoor: "Buiten", mtRain: "Regenmeter", mtWind: "Windmeter",
     entRain: "Regensensor (dagtotaal)", entWind: "Windsnelheidssensor",
     rainHour: "Regen in het vorige uur", rainRate: "Regen sinds de laatste meting",
     gust: "Windstoot-entiteit", windDir: "Windrichting-entiteit",
@@ -164,6 +164,7 @@ const NT_BY_CLASS = {
 const NT_FIELDS = {
   indoor: ["humidity_entity", "co2_entity", "noise_entity", "pressure_entity",
     "trend_entity", "battery_entity", "connectivity_entity"],
+  indoor_extra: ["humidity_entity", "co2_entity", "trend_entity", "battery_entity", "connectivity_entity"],
   outdoor: ["humidity_entity", "trend_entity", "battery_entity", "connectivity_entity"],
   rain: ["rain_hour_entity", "rain_rate_entity", "battery_entity", "connectivity_entity"],
   wind: ["gust_entity", "wind_direction_entity", "battery_entity", "connectivity_entity"],
@@ -172,6 +173,7 @@ const NT_FIELDS = {
 // The main reading of each module, and how many decimals suit it.
 const NT_MAIN = {
   indoor: { device_class: "temperature", dec: 1 },
+  indoor_extra: { device_class: "temperature", dec: 1 },
   outdoor: { device_class: "temperature", dec: 1 },
   rain: { device_class: "precipitation", dec: 1 },
   wind: { device_class: "wind_speed", dec: 0 },
@@ -199,6 +201,14 @@ const NT_GUST_RE = /gust|rafale|b(ö|oe)e|raffica|racha|windstoot/i;
 // Netatmo ships two direction sensors: `windangle_value` in degrees (device_class
 // wind_direction, disabled by default) and `windangle`, an enum of cardinals that IS
 // enabled by default. Both are accepted; the enum is mapped back onto an angle.
+// All three cylinders are 45 mm across. Heights: 155 mm for the station, 92 mm for the
+// additional indoor module, 105 mm for the outdoor one.
+const NT_SHAPE = {
+  indoor: { ratio: 3.44, slot: [0.175, 0.84] },
+  indoor_extra: { ratio: 2.04, slot: [0.22, 0.78] },
+  outdoor: { ratio: 2.33, slot: [0.22, 0.76] },
+};
+
 const NT_ENUM_DIRS = ["n", "ne", "e", "se", "s", "sw", "w", "nw"];
 function ntWindAngle(st) {
   if (!st) return NaN;
@@ -218,9 +228,18 @@ function ntSiblings(hass, entity) {
   }
   const base = entity.split(".")[1].replace(/_[a-z0-9]+$/, "");
   if (base.length < 3) return [];
-  return Object.keys(hass.states).filter(
-    (e) => e !== entity && /^(sensor|binary_sensor)\./.test(e) && e.split(".")[1].startsWith(base + "_")
-  );
+  return Object.keys(hass.states)
+    .filter((e) => e !== entity && /^(sensor|binary_sensor)\./.test(e) && e.split(".")[1].startsWith(base + "_"))
+    .sort((a, b) => a.length - b.length);
+}
+
+// Whether two entities sit on the same device. Undecidable without the registry, in which
+// case we leave the user's choice alone.
+function ntSameDevice(hass, a, b) {
+  const reg = hass.entities || {};
+  const da = reg[a] && reg[a].device_id;
+  const db = reg[b] && reg[b].device_id;
+  return da && db ? da === db : true;
 }
 
 // Maps the other entities of the module onto the card's config keys. Kind-aware, because
@@ -279,8 +298,8 @@ class NetatmoCard extends HTMLElement {
     const netatmo = temps.filter((e) => /netatmo/i.test(hass.states[e].attributes.attribution || ""));
     const entity = netatmo[0] || temps[0] || "";
     const dev = entity ? ntDeviceFields(hass, entity, "indoor") : null;
-    const indoor = !dev || dev.has("co2_entity") || dev.has("pressure_entity") || dev.has("noise_entity");
-    const type = indoor ? "indoor" : "outdoor";
+    const type = !dev || dev.has("noise_entity") || dev.has("pressure_entity") ? "indoor"
+      : dev.has("co2_entity") ? "indoor_extra" : "outdoor";
     return { module_type: type, entity: entity, ...(entity ? ntAutofill(hass, { entity, module_type: type }) : {}) };
   }
 
@@ -467,16 +486,18 @@ class NetatmoCard extends HTMLElement {
   // groove on the front, translucent white base ring, white top that lights up.
   _svgCylinder() {
     const u = this._uid();
-    const indoor = this._kind() === "indoor";
+    const kind = this._kind();
+    const shape = NT_SHAPE[kind] || NT_SHAPE.indoor;
+    const outdoor = kind === "outdoor";
     const CX = 62, RX = 26, RY = 6.5;
     const BASE_BOT = 288, BASE_H = 10;
     const FOOT = BASE_BOT - BASE_H;                          // metal / white base seam
-    const TOTAL = (indoor ? 3.44 : 2.33) * RX * 2;           // 45 mm across, 155 / 105 mm tall
+    const TOTAL = shape.ratio * RX * 2;                      // 45 mm across
     const TOP = BASE_BOT - TOTAL + RY;                       // centre of the top ellipse
     const H = FOOT - TOP;
 
-    const slotY1 = TOP + H * (indoor ? 0.175 : 0.22);
-    const slotY2 = TOP + H * (indoor ? 0.84 : 0.76);
+    const slotY1 = TOP + H * shape.slot[0];
+    const slotY2 = TOP + H * shape.slot[1];
     const slotX = CX + RX * 0.25, slotW = 4.2;               // sits right of centre: we see the front-right face
     const slotH = slotY2 - slotY1;                           // the groove is the light guide — this is what lights up
 
@@ -530,7 +551,7 @@ class NetatmoCard extends HTMLElement {
 
         <path d="${base}" fill="url(#nt-base-${u})"/>
         <path d="${base}" fill="none" stroke="#000" stroke-opacity="0.14" stroke-width="0.7"/>
-        ${indoor ? "" : `<rect x="${CX + 1}" y="${BASE_BOT - 1}" width="1.8" height="4" rx="0.9" fill="#e6e9ea" stroke="#000" stroke-opacity="0.18" stroke-width="0.5"/>`}
+        ${outdoor ? `<rect x="${CX + 1}" y="${BASE_BOT - 1}" width="1.8" height="4" rx="0.9" fill="#e6e9ea" stroke="#000" stroke-opacity="0.18" stroke-width="0.5"/>` : ""}
 
         <path d="${body}" fill="url(#nt-body-${u})"/>
         <g clip-path="url(#nt-clip-${u})">
@@ -689,7 +710,8 @@ class NetatmoCard extends HTMLElement {
   // Only the indoor station has a light guide behind the groove — the outdoor module has no LED.
   _glowColor() {
     const c = this._config;
-    if (c.show_glow === false || this._kind() !== "indoor") return null;
+    const kind = this._kind();
+    if (c.show_glow === false || (kind !== "indoor" && kind !== "indoor_extra")) return null;
     const co2 = this._num(c.co2_entity);
     if (isNaN(co2)) return null;
     if (co2 < c.co2_good) return "#3ec46d";
@@ -910,14 +932,20 @@ class NetatmoCardEditor extends HTMLElement {
         if (v.entity && (!mainSt || mainSt.attributes.device_class === wanted)) out.entity = v.entity;
         if (v.name) out.name = v.name;
         if (v.label) out.label = v.label;
-        // Switching module type drops the readings the other one does not have.
-        for (const k of NT_FIELDS[kind]) if (v[k]) out[k] = v[k];
+        // Switching module type drops the readings the other one does not have. Pointing the
+        // card at another module drops the readings that belong to the old one, otherwise a
+        // sub-module keeps showing its parent station's humidity, CO2 and so on.
+        const moved = out.entity && out.entity !== (this._config && this._config.entity);
+        const fresh = moved ? ntResolve(this._hass, out.entity, kind) : null;
+        for (const k of NT_FIELDS[kind]) {
+          let val = v[k];
+          if (moved && val && !ntSameDevice(this._hass, out.entity, val)) val = fresh[k] || "";
+          if (val) out[k] = val;
+        }
         if (v.decimals != null && v.decimals !== "" && parseInt(v.decimals, 10) !== NT_MAIN[kind].dec) {
           out.decimals = parseInt(v.decimals, 10);
         }
-        if ((kind === "indoor" || kind === "outdoor") && v.body_color && v.body_color !== "aluminium") {
-          out.body_color = v.body_color;
-        }
+        if (NT_SHAPE[kind] && v.body_color && v.body_color !== "aluminium") out.body_color = v.body_color;
         if (kind === "indoor") {
           if (v.show_glow === false) out.show_glow = false;
           if (v.co2_good != null && v.co2_good !== "" && parseFloat(v.co2_good) !== 1000) out.co2_good = parseFloat(v.co2_good);
@@ -976,6 +1004,7 @@ class NetatmoCardEditor extends HTMLElement {
     this._form.schema = [
       { name: "module_type", label: t.modType, selector: { select: { mode: "dropdown", options: [
         { value: "indoor", label: t.mtIndoor },
+        { value: "indoor_extra", label: t.mtIndoorExtra },
         { value: "outdoor", label: t.mtOutdoor },
         { value: "rain", label: t.mtRain },
         { value: "wind", label: t.mtWind },
@@ -986,7 +1015,7 @@ class NetatmoCardEditor extends HTMLElement {
       { name: "label", label: t.label, selector: { text: {} } },
       ...NT_FIELDS[kind].filter(has).map((k) => ({ name: k, label: labels[k], selector: NT_SELECTOR[k] })),
       { name: "decimals", label: t.decimals, selector: { number: { mode: "box", step: 1, min: 0, max: 3 } } },
-      ...(kind === "indoor" || kind === "outdoor" ? [
+      ...(NT_SHAPE[kind] ? [
         { name: "body_color", label: t.body, selector: { select: { mode: "dropdown", options: [
           { value: "aluminium", label: t.bodyAlu },
           { value: "sand", label: t.bodySand },

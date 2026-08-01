@@ -17,19 +17,21 @@
 Multilingue (6 langues : EN, FR, DE, ES, IT, NL — détectées depuis Home Assistant).
 
 Une card Lovelace qui dessine les **modules de la station météo** tels qu'ils sont, avec les
-mesures à côté. Quatre modules : la station intérieure et le module extérieur en cylindres alu
-mat avec leur rainure en creux, le pluviomètre avec son collecteur transparent et son entonnoir
-noir, et l'anémomètre avec ses deux disques brillants. La fente de l'intérieur s'allume selon
-la qualité de l'air, comme sur le vrai.
+mesures à côté. Cinq modules : la station intérieure, le module intérieur supplémentaire et
+le module extérieur en cylindres alu mat avec leur rainure en creux, chacun à sa hauteur réelle,
+le pluviomètre avec son collecteur transparent et son entonnoir noir, et l'anémomètre avec ses
+deux disques brillants. Les fentes des modules intérieurs s'allument selon la qualité de l'air,
+comme sur les vrais.
 
 ![Netatmo Card](https://raw.githubusercontent.com/ADNPolymerase/ha-netatmo-card/main/docs/screenshot.fr.png)
 
 ## Fonctionnalités
 
-- **Quatre modules, une card** : `indoor`, `outdoor`, `rain` et `wind`. Vous choisissez le type, le dessin et les champs suivent. Intérieur et extérieur partagent leur diamètre et diffèrent en hauteur, comme la vraie paire.
+- **Cinq modules, une card** : `indoor`, `indoor_extra`, `outdoor`, `rain` et `wind`. Vous choisissez le type, le dessin et les champs suivent. Les trois cylindres partagent leur diamètre et diffèrent en hauteur, comme les vrais : 155 mm pour la station, 105 mm à l'extérieur, 92 mm pour le module intérieur supplémentaire.
+- **Module intérieur supplémentaire** : température, humidité et CO₂ avec une batterie, sans bruit ni pression, puisque ce module ne les mesure pas.
 - **Pluviomètre** : la pluie du jour en gros, avec l'heure précédente et la pluie depuis le dernier relevé en tuiles.
 - **Anémomètre** : la vitesse du vent avec une flèche girouette pointant où souffle le vent, la rafale et la direction en degrés avec son point cardinal.
-- **La fente s'allume**, comme sur la vraie station intérieure : vert / orange / rouge selon le CO₂. Le module extérieur n'a pas de LED, il ne s'allume donc jamais. Seuils configurables, désactivable avec `show_glow: false`.
+- **La fente s'allume** sur les deux modules intérieurs, comme sur les vrais : vert / orange / rouge selon le CO₂. Le module extérieur n'a pas de LED, il ne s'allume donc jamais. Seuils configurables, désactivable avec `show_glow: false`.
 - **Compléter depuis l'appareil** : choisissez le capteur de température et l'éditeur propose un bouton qui remplit humidité, CO₂, bruit, pression, batterie et connectivité depuis le même appareil.
 - **Uniquement les options pertinentes** : un champ n'apparaît que si le type de module possède cette mesure *et* que l'appareil expose l'entité — pas de batterie sur une station intérieure sur secteur, pas de CO₂ / bruit / pression sur le module extérieur. Chaque liste est filtrée sur le `device_class` correspondant.
 - **Mesures en tuiles** : température en gros avec sa flèche de tendance, puis humidité, CO₂, bruit et pression — chacune colorée hors de la plage de confort, chacune ouvrant sa fiche au clic.
@@ -61,7 +63,7 @@ Alternative manuelle : copier `netatmo-card.js` depuis la [dernière release](ht
 
 Ajoutez la card depuis l'interface (chercher « Netatmo ») — un capteur de température est
 détecté automatiquement, et l'éditeur propose de compléter le reste du module. Choisissez
-intérieur ou extérieur.
+d'abord le type de module.
 Ou en YAML :
 
 ```yaml
@@ -79,7 +81,7 @@ label: Entrée
 | Option | Défaut | Description |
 |---|---|---|
 | `entity` | **requis** | Capteur de température — la valeur principale |
-| `module_type` | `indoor` | `indoor`, `outdoor`, `rain` ou `wind` — définit le module dessiné |
+| `module_type` | `indoor` | `indoor`, `indoor_extra`, `outdoor`, `rain` ou `wind` — définit le module dessiné |
 | `name` | nom convivial | Titre affiché à côté du module |
 | `label` | — | Sous-titre sous la valeur (ex. la pièce) |
 | `humidity_entity` | — | Humidité, affichée en tuile |
@@ -94,8 +96,8 @@ label: Entrée
 | `battery_entity` | — | Capteur de batterie affiché en haut à droite |
 | `connectivity_entity` | — | Capteur de connectivité affiché en haut à gauche |
 | `decimals` | `1` | Décimales de la température |
-| `body_color` | `aluminium` | `aluminium`, `sand`, `mint` ou `graphite` (intérieur et extérieur seulement) |
-| `show_glow` | `true` | Allumer la fente selon la qualité de l'air (module intérieur seulement) |
+| `body_color` | `aluminium` | `aluminium`, `sand`, `mint` ou `graphite` (les trois cylindres seulement) |
+| `show_glow` | `true` | Allumer la fente selon la qualité de l'air (les deux modules intérieurs) |
 | `co2_good` | `1000` | En dessous, la fente s'allume en vert (ppm) |
 | `co2_bad` | `2000` | Au-dessus, la fente s'allume en rouge (ppm) |
 | `accent_color` | `#2f8fd0` | Couleur de la courbe 24 h |

@@ -80,6 +80,7 @@ customElements.define("ha-form", StubForm);
   <netatmo-card id="c2"></netatmo-card>
   <netatmo-card id="c3"></netatmo-card>
   <netatmo-card id="c4"></netatmo-card>
+  <netatmo-card id="c5"></netatmo-card>
 </div>
 <div id="eds" style="display:flex;gap:24px;margin-top:24px;flex-wrap:wrap;"></div>
 <script>
@@ -132,10 +133,30 @@ const states = {};
  st("binary_sensor.anemometre_connectivite", "on", { device_class: "connectivity" }),
 ].forEach((s) => (states[s.entity_id] = s));
 
+// A station plus an additional indoor module, to check that pointing the card at the
+// sub-module does not keep the station's readings.
+[st("sensor.maison_temperature", 21.4, { unit_of_measurement: "°C", device_class: "temperature",
+    friendly_name: "Maison" }),
+ st("sensor.maison_humidite", 48, { unit_of_measurement: "%", device_class: "humidity" }),
+ st("sensor.maison_dioxyde_de_carbone", 620, { unit_of_measurement: "ppm", device_class: "carbon_dioxide" }),
+ st("sensor.maison_bruit", 41, { unit_of_measurement: "dB", device_class: "sound_pressure" }),
+ st("sensor.maison_pression_atmospherique", 1014, { unit_of_measurement: "hPa", device_class: "atmospheric_pressure" }),
+ st("binary_sensor.maison_connectivite", "on", { device_class: "connectivity" }),
+ st("sensor.maison_chambre_des_maitres_temperature", 19.8, { unit_of_measurement: "°C",
+    device_class: "temperature", friendly_name: "Chambre des maîtres" }),
+ st("sensor.maison_chambre_des_maitres_humidite", 53, { unit_of_measurement: "%", device_class: "humidity" }),
+ st("sensor.maison_chambre_des_maitres_dioxyde_de_carbone", 880, { unit_of_measurement: "ppm",
+    device_class: "carbon_dioxide" }),
+ st("sensor.maison_chambre_des_maitres_batterie", 74, { unit_of_measurement: "%", device_class: "battery" }),
+ st("binary_sensor.maison_chambre_des_maitres_connectivite", "on", { device_class: "connectivity" }),
+].forEach((x) => (states[x.entity_id] = x));
+
 // His real modules: the indoor station has no battery, the outdoor one has no CO2 /
 // noise / pressure, and both have their trend sensors disabled.
 for (const e of Object.keys(states)) {
-  registry[e] = { device_id: e.includes("_interieur_") ? "dev_in"
+  registry[e] = { device_id: e.includes("chambre_des_maitres") ? "dev_bedroom"
+    : e.includes("maison_") ? "dev_house"
+    : e.includes("_interieur_") ? "dev_in"
     : e.includes("pluviometre") ? "dev_rain"
     : e.includes("anemometre") ? "dev_wind" : "dev_out" };
 }
@@ -196,6 +217,19 @@ c4.setConfig({
 });
 c4.hass = mkHass(states);
 
+const c5 = document.getElementById("c5");
+c5.setConfig({
+  type: "custom:netatmo-card",
+  module_type: "indoor_extra",
+  entity: "sensor.maison_chambre_des_maitres_temperature",
+  humidity_entity: "sensor.maison_chambre_des_maitres_humidite",
+  co2_entity: "sensor.maison_chambre_des_maitres_dioxyde_de_carbone",
+  battery_entity: "sensor.maison_chambre_des_maitres_batterie",
+  connectivity_entity: "binary_sensor.maison_chambre_des_maitres_connectivite",
+  label: lang === "fr" ? "Chambre" : "Bedroom",
+});
+c5.hass = mkHass(states);
+
 if (q.get("editor")) {
   document.getElementById("wrap").style.display = "none";
   for (const cfg of [
@@ -242,6 +276,43 @@ if (q.get("switch")) {
   }));
   log.push("APRES  schema = " + ed.querySelector("ha-form")._schema.map((x) => x.name).join(", "));
   out.textContent = log.join("\n\n");
+}
+</script>
+<script>
+// submodule: point an editor configured on the station at one of its sub-modules.
+if (q.get("submodule")) {
+  document.getElementById("wrap").style.display = "none";
+  const out = document.createElement("pre");
+  out.style.cssText = "font:12px/1.6 ui-monospace,monospace;background:#fff;padding:16px;border-radius:10px;white-space:pre-wrap;";
+  document.body.appendChild(out);
+  const lines = [];
+  const ed = document.createElement("netatmo-card-editor");
+  ed.hass = mkHass(states);
+  const stationCfg = {
+    type: "custom:netatmo-card", module_type: "indoor",
+    entity: "sensor.maison_temperature",
+    humidity_entity: "sensor.maison_humidite",
+    co2_entity: "sensor.maison_dioxyde_de_carbone",
+    noise_entity: "sensor.maison_bruit",
+    pressure_entity: "sensor.maison_pression_atmospherique",
+    connectivity_entity: "binary_sensor.maison_connectivite",
+  };
+  ed.setConfig(stationCfg);
+  document.body.appendChild(ed);
+  let last = null;
+  ed.addEventListener("config-changed", (e) => (last = e.detail.config));
+  lines.push("DEPART (station)\n" + JSON.stringify(stationCfg, null, 2));
+  const form = ed.querySelector("ha-form");
+  // the user swaps the temperature sensor for the bedroom sub-module's one
+  form.dispatchEvent(new CustomEvent("value-changed", {
+    detail: { value: { ...form.data, entity: "sensor.maison_chambre_des_maitres_temperature" } },
+    bubbles: true, composed: true,
+  }));
+  lines.push("APRES avoir pointe le sous-module\n" + JSON.stringify(last, null, 2));
+  const bad = Object.entries(last || {}).filter(([k, val]) =>
+    typeof val === "string" && val.startsWith("sensor.maison_") && !val.includes("chambre_des_maitres"));
+  lines.push("entites restees sur la station : " + (bad.length ? JSON.stringify(bad) : "aucune"));
+  out.textContent = lines.join("\n\n");
 }
 </script>
 </body>
