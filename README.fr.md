@@ -14,15 +14,15 @@ Multilingue (6 langues : EN, FR, DE, ES, IT, NL — détectées depuis Home Assi
 
 Une card Lovelace qui dessine les **modules météo intérieur et extérieur** tels qu'ils sont —
 cylindre alu mat, rainure verticale en creux, socle translucide — avec les mesures à côté
-et la fente qui s'allume selon la qualité de l'air, comme sur le vrai module. Intérieur et
-extérieur sont dessinés à leurs tailles relatives réelles.
+et la fente qui s'allume selon la qualité de l'air, comme sur la vraie station intérieure.
+Intérieur et extérieur sont dessinés à leurs tailles relatives réelles.
 
 ![Netatmo Card](https://raw.githubusercontent.com/ADNPolymerase/ha-netatmo-card/main/docs/screenshot.fr.png)
 
 ## Fonctionnalités
 
-- **Deux modules, une card** : la station intérieure haute et le module extérieur court, à leurs proportions réelles. `module_type` est déduit automatiquement des entités fournies.
-- **La fente s'allume**, comme sur le vrai module : vert / orange / rouge selon le CO₂ à l'intérieur, selon la température à l'extérieur. Seuils configurables, désactivable avec `show_glow: false`.
+- **Deux modules, une card** : la station intérieure haute et le module extérieur court, à leurs proportions réelles. Vous choisissez `indoor` ou `outdoor`, le dessin suit.
+- **La fente s'allume**, comme sur la vraie station intérieure : vert / orange / rouge selon le CO₂. Le module extérieur n'a pas de LED, il ne s'allume donc jamais. Seuils configurables, désactivable avec `show_glow: false`.
 - **Compléter depuis l'appareil** : choisissez le capteur de température et l'éditeur propose un bouton qui remplit humidité, CO₂, bruit, pression, batterie et connectivité depuis le même appareil.
 - **Mesures en tuiles** : température en gros avec sa flèche de tendance, puis humidité, CO₂, bruit et pression — chacune colorée hors de la plage de confort, chacune ouvrant sa fiche au clic.
 - **Batterie et connectivité** dans les coins (niveau coloré, icône wifi barrée en rouge hors ligne).
@@ -44,11 +44,13 @@ Alternative manuelle : copier `netatmo-card.js` depuis la [dernière release](ht
 ## Utilisation
 
 Ajoutez la card depuis l'interface (chercher « Netatmo ») — un capteur de température est
-détecté automatiquement, et l'éditeur propose de compléter le reste du module.
+détecté automatiquement, et l'éditeur propose de compléter le reste du module. Choisissez
+intérieur ou extérieur.
 Ou en YAML :
 
 ```yaml
 type: custom:netatmo-card
+module_type: indoor
 entity: sensor.capteur_interieur_temperature
 humidity_entity: sensor.capteur_interieur_humidite
 co2_entity: sensor.capteur_interieur_dioxyde_de_carbone
@@ -61,7 +63,7 @@ label: Entrée
 | Option | Défaut | Description |
 |---|---|---|
 | `entity` | **requis** | Capteur de température — la valeur principale |
-| `module_type` | auto | `indoor` ou `outdoor` ; auto = intérieur si CO₂/bruit/pression renseigné |
+| `module_type` | `indoor` | `indoor` ou `outdoor` — définit le module dessiné |
 | `name` | nom convivial | Titre affiché à côté du module |
 | `label` | — | Sous-titre sous la valeur (ex. la pièce) |
 | `humidity_entity` | — | Humidité, affichée en tuile |
@@ -73,9 +75,9 @@ label: Entrée
 | `connectivity_entity` | — | Capteur de connectivité affiché en haut à gauche |
 | `decimals` | `1` | Décimales de la température |
 | `body_color` | `aluminium` | `aluminium`, `sand`, `mint` ou `graphite` |
-| `show_glow` | `true` | Allumer la fente du module |
-| `co2_good` | `1000` | En dessous, le dessus s'allume en vert (ppm) |
-| `co2_bad` | `2000` | Au-dessus, le dessus s'allume en rouge (ppm) |
+| `show_glow` | `true` | Allumer la fente selon la qualité de l'air (module intérieur seulement) |
+| `co2_good` | `1000` | En dessous, la fente s'allume en vert (ppm) |
+| `co2_bad` | `2000` | Au-dessus, la fente s'allume en rouge (ppm) |
 | `accent_color` | `#2f8fd0` | Couleur de la courbe 24 h |
 | `show_history` | `false` | Ajoute le bouton de tracé 24 h dépliable |
 | `history_entity` | `entity` | Capteur tracé dans le graphe 24 h |

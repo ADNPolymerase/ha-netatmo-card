@@ -86,6 +86,7 @@ const states = {};
 const c1 = document.getElementById("c1");
 c1.setConfig({
   type: "custom:netatmo-card",
+  module_type: "indoor",
   entity: "sensor.capteur_interieur_temperature",
   humidity_entity: "sensor.capteur_interieur_humidite",
   co2_entity: "sensor.capteur_interieur_dioxyde_de_carbone",
@@ -101,6 +102,7 @@ c1.hass = mkHass(states);
 const c2 = document.getElementById("c2");
 c2.setConfig({
   type: "custom:netatmo-card",
+  module_type: "outdoor",
   entity: "sensor.capteur_exterieur_temperature",
   humidity_entity: "sensor.capteur_exterieur_humidite",
   battery_entity: "sensor.capteur_exterieur_batterie",

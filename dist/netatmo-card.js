@@ -15,7 +15,7 @@ const NT_T = {
     humidity: "Humidity entity", co2: "CO₂ entity", noise: "Noise entity", pressure: "Pressure entity",
     trend: "Temperature trend entity", battery: "Battery entity", connectivity: "Connectivity entity",
     body: "Module finish", bodyAlu: "Aluminium", bodySand: "Sand", bodyMint: "Mint", bodyGraphite: "Graphite",
-    glow: "Light up the front groove (air quality / temperature)", accent: "Accent color (hex)",
+    glow: "Light up the groove with air quality (indoor)", accent: "Accent color (hex)",
     co2Good: "CO₂ threshold — good (ppm)", co2Bad: "CO₂ threshold — poor (ppm)",
     histOpt: "Show the 24 h history button", histEnt: "Charted entity (default: temperature)",
     hist: "Last 24 h", noData: "No data",
@@ -28,7 +28,7 @@ const NT_T = {
     humidity: "Entité humidité", co2: "Entité CO₂", noise: "Entité bruit", pressure: "Entité pression",
     trend: "Entité tendance de la température", battery: "Entité batterie", connectivity: "Entité connectivité",
     body: "Finition du module", bodyAlu: "Aluminium", bodySand: "Sable", bodyMint: "Menthe", bodyGraphite: "Graphite",
-    glow: "Allumer la fente (qualité de l'air / température)", accent: "Couleur d'accent (hex)",
+    glow: "Allumer la fente selon la qualité de l'air (intérieur)", accent: "Couleur d'accent (hex)",
     co2Good: "Seuil CO₂ — bon (ppm)", co2Bad: "Seuil CO₂ — mauvais (ppm)",
     histOpt: "Afficher le bouton tracé 24 h", histEnt: "Entité tracée (défaut : température)",
     hist: "Dernières 24 h", noData: "Aucune donnée",
@@ -41,7 +41,7 @@ const NT_T = {
     humidity: "Feuchtigkeits-Entität", co2: "CO₂-Entität", noise: "Lärm-Entität", pressure: "Luftdruck-Entität",
     trend: "Entität Temperaturtrend", battery: "Batterie-Entität", connectivity: "Konnektivitäts-Entität",
     body: "Oberfläche des Moduls", bodyAlu: "Aluminium", bodySand: "Sand", bodyMint: "Mint", bodyGraphite: "Graphit",
-    glow: "Frontschlitz leuchten lassen (Luftqualität / Temperatur)", accent: "Akzentfarbe (Hex)",
+    glow: "Schlitz nach Luftqualität leuchten lassen (innen)", accent: "Akzentfarbe (Hex)",
     co2Good: "CO₂-Schwelle — gut (ppm)", co2Bad: "CO₂-Schwelle — schlecht (ppm)",
     histOpt: "24-h-Verlauf-Button anzeigen", histEnt: "Dargestellte Entität (Standard: Temperatur)",
     hist: "Letzte 24 h", noData: "Keine Daten",
@@ -54,7 +54,7 @@ const NT_T = {
     humidity: "Entidad de humedad", co2: "Entidad de CO₂", noise: "Entidad de ruido", pressure: "Entidad de presión",
     trend: "Entidad de tendencia de temperatura", battery: "Entidad de batería", connectivity: "Entidad de conectividad",
     body: "Acabado del módulo", bodyAlu: "Aluminio", bodySand: "Arena", bodyMint: "Menta", bodyGraphite: "Grafito",
-    glow: "Iluminar la ranura frontal (calidad del aire / temperatura)", accent: "Color de acento (hex)",
+    glow: "Iluminar la ranura según la calidad del aire (interior)", accent: "Color de acento (hex)",
     co2Good: "Umbral CO₂ — bueno (ppm)", co2Bad: "Umbral CO₂ — malo (ppm)",
     histOpt: "Mostrar el botón de historial 24 h", histEnt: "Entidad del gráfico (por defecto: temperatura)",
     hist: "Últimas 24 h", noData: "Sin datos",
@@ -67,7 +67,7 @@ const NT_T = {
     humidity: "Entità umidità", co2: "Entità CO₂", noise: "Entità rumore", pressure: "Entità pressione",
     trend: "Entità tendenza della temperatura", battery: "Entità batteria", connectivity: "Entità connettività",
     body: "Finitura del modulo", bodyAlu: "Alluminio", bodySand: "Sabbia", bodyMint: "Menta", bodyGraphite: "Grafite",
-    glow: "Illumina la fessura frontale (qualità dell'aria / temperatura)", accent: "Colore d'accento (hex)",
+    glow: "Illumina la fessura secondo la qualità dell'aria (interno)", accent: "Colore d'accento (hex)",
     co2Good: "Soglia CO₂ — buona (ppm)", co2Bad: "Soglia CO₂ — scarsa (ppm)",
     histOpt: "Mostra il pulsante storico 24 h", histEnt: "Entità nel grafico (predefinito: temperatura)",
     hist: "Ultime 24 h", noData: "Nessun dato",
@@ -80,7 +80,7 @@ const NT_T = {
     humidity: "Vochtigheids-entiteit", co2: "CO₂-entiteit", noise: "Geluids-entiteit", pressure: "Luchtdruk-entiteit",
     trend: "Entiteit temperatuurtrend", battery: "Batterij-entiteit", connectivity: "Connectiviteits-entiteit",
     body: "Afwerking van de module", bodyAlu: "Aluminium", bodySand: "Zand", bodyMint: "Mint", bodyGraphite: "Grafiet",
-    glow: "Voorste sleuf laten oplichten (luchtkwaliteit / temperatuur)", accent: "Accentkleur (hex)",
+    glow: "Sleuf laten oplichten op luchtkwaliteit (binnen)", accent: "Accentkleur (hex)",
     co2Good: "CO₂-drempel — goed (ppm)", co2Bad: "CO₂-drempel — slecht (ppm)",
     histOpt: "Toon de 24 u-geschiedenisknop", histEnt: "Weergegeven entiteit (standaard: temperatuur)",
     hist: "Afgelopen 24 u", noData: "Geen gegevens",
@@ -168,7 +168,9 @@ class NetatmoCard extends HTMLElement {
     );
     const netatmo = temps.filter((e) => /netatmo/i.test(hass.states[e].attributes.attribution || ""));
     const entity = netatmo[0] || temps[0] || "";
-    return { entity: entity, ...(entity ? ntAutofill(hass, { entity }) : {}) };
+    const found = entity ? ntAutofill(hass, { entity }) : {};
+    const indoor = found.co2_entity || found.pressure_entity || found.noise_entity;
+    return { entity: entity, module_type: indoor ? "indoor" : "outdoor", ...found };
   }
 
   setConfig(config) {
@@ -177,6 +179,7 @@ class NetatmoCard extends HTMLElement {
     if (!(dec >= 0 && dec <= 3)) dec = 1;
     this._config = {
       ...config,
+      module_type: config.module_type === "outdoor" ? "outdoor" : "indoor",
       decimals: dec,
       co2_good: parseFloat(config.co2_good) > 0 ? parseFloat(config.co2_good) : 1000,
       co2_bad: parseFloat(config.co2_bad) > 0 ? parseFloat(config.co2_bad) : 2000,
@@ -200,9 +203,7 @@ class NetatmoCard extends HTMLElement {
   }
 
   _kind() {
-    const m = this._config.module_type;
-    if (m === "indoor" || m === "outdoor") return m;
-    return (this._config.co2_entity || this._config.pressure_entity || this._config.noise_entity) ? "indoor" : "outdoor";
+    return this._config.module_type === "outdoor" ? "outdoor" : "indoor";
   }
 
   // Drawn from the Netatmo product shots: matte anodised cylinder, one long recessed
@@ -423,22 +424,14 @@ class NetatmoCard extends HTMLElement {
     return isNaN(n) ? NaN : n;
   }
 
+  // Only the indoor station has a light guide behind the groove — the outdoor module has no LED.
   _glowColor() {
     const c = this._config;
-    if (c.show_glow === false) return null;
+    if (c.show_glow === false || this._kind() !== "indoor") return null;
     const co2 = this._num(c.co2_entity);
-    if (this._kind() === "indoor" && !isNaN(co2)) {
-      if (co2 < c.co2_good) return "#3ec46d";
-      if (co2 < c.co2_bad) return "#f0a025";
-      return "#e0503a";
-    }
-    const t = this._num(c.entity);
-    if (isNaN(t)) return null;
-    if (t <= 0) return "#4a7fe2";
-    if (t <= 10) return "#5cb4e8";
-    if (t <= 19) return "#3ec46d";
-    if (t <= 26) return "#f2c744";
-    if (t <= 32) return "#f0883c";
+    if (isNaN(co2)) return null;
+    if (co2 < c.co2_good) return "#3ec46d";
+    if (co2 < c.co2_bad) return "#f0a025";
     return "#e0503a";
   }
 
@@ -622,7 +615,7 @@ class NetatmoCardEditor extends HTMLElement {
       this._form.addEventListener("value-changed", (ev) => {
         const v = ev.detail.value;
         const out = { type: "custom:netatmo-card", entity: v.entity };
-        if (v.module_type && v.module_type !== "auto") out.module_type = v.module_type;
+        out.module_type = v.module_type === "outdoor" ? "outdoor" : "indoor";
         if (v.name) out.name = v.name;
         if (v.label) out.label = v.label;
         for (const k of ["humidity_entity", "co2_entity", "noise_entity", "pressure_entity",
@@ -649,7 +642,7 @@ class NetatmoCardEditor extends HTMLElement {
     this._form.hass = this._hass;
     this._form.data = {
       entity: c.entity || "",
-      module_type: c.module_type || "auto",
+      module_type: c.module_type === "outdoor" ? "outdoor" : "indoor",
       name: c.name || "",
       label: c.label || "",
       humidity_entity: c.humidity_entity || "",
@@ -672,7 +665,6 @@ class NetatmoCardEditor extends HTMLElement {
     this._form.schema = [
       { name: "entity", label: t.entity, selector: { entity: { domain: "sensor", device_class: "temperature" } } },
       { name: "module_type", label: t.modType, selector: { select: { mode: "dropdown", options: [
-        { value: "auto", label: t.auto },
         { value: "indoor", label: t.mtIndoor },
         { value: "outdoor", label: t.mtOutdoor },
       ] } } },
