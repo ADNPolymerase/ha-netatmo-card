@@ -100,6 +100,7 @@ label: Entrée
 | `show_glow` | `true` | Allumer la fente selon la qualité de l'air (les deux modules intérieurs) |
 | `co2_good` | `1000` | En dessous, la fente s'allume en vert (ppm) |
 | `co2_bad` | `2000` | Au-dessus, la fente s'allume en rouge (ppm) |
+| `clickable` | `true` | Ouvrir la fiche de l'entité au clic sur la card ou une tuile |
 | `accent_color` | `#2f8fd0` | Couleur de la courbe 24 h |
 | `show_history` | `false` | Ajoute le bouton de tracé 24 h dépliable |
 | `history_entity` | `entity` | Capteur tracé dans le graphe 24 h |

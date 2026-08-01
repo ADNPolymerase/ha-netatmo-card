@@ -99,6 +99,7 @@ label: Hallway
 | `show_glow` | `true` | Light up the groove with air quality (both indoor modules) |
 | `co2_good` | `1000` | Below this, the groove glows green (ppm) |
 | `co2_bad` | `2000` | Above this, the groove glows red (ppm) |
+| `clickable` | `true` | Open the more-info dialog when the card or a tile is tapped |
 | `accent_color` | `#2f8fd0` | Color of the 24 h curve |
 | `show_history` | `false` | Adds the collapsible 24 h history button |
 | `history_entity` | `entity` | Sensor plotted in the 24 h chart |
