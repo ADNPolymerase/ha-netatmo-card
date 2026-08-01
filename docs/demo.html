@@ -215,5 +215,34 @@ if (q.get("editor")) {
   }
 }
 </script>
+<script>
+// switchtest: drive a real module-type change through the editor and show what it emits.
+if (q.get("switch")) {
+  document.getElementById("wrap").style.display = "none";
+  const out = document.createElement("pre");
+  out.style.cssText = "font:12px/1.6 ui-monospace,monospace;background:#fff;padding:16px;border-radius:10px;white-space:pre-wrap;";
+  document.body.appendChild(out);
+  const log = [];
+  const ed = document.createElement("netatmo-card-editor");
+  ed.hass = mkHass(states);
+  ed.setConfig({
+    type: "custom:netatmo-card", module_type: "indoor",
+    entity: "sensor.capteur_interieur_temperature",
+    humidity_entity: "sensor.capteur_interieur_humidite",
+    co2_entity: "sensor.capteur_interieur_dioxyde_de_carbone",
+    noise_entity: "sensor.capteur_interieur_bruit",
+  });
+  document.body.appendChild(ed);
+  ed.addEventListener("config-changed", (e) => log.push(JSON.stringify(e.detail.config, null, 2)));
+  const form = ed.querySelector("ha-form");
+  log.push("AVANT  " + JSON.stringify(form.data.module_type) + " entity=" + form.data.entity);
+  // the user opens the dropdown and picks "Pluviomètre"
+  form.dispatchEvent(new CustomEvent("value-changed", {
+    detail: { value: { ...form.data, module_type: "rain" } }, bubbles: true, composed: true,
+  }));
+  log.push("APRES  schema = " + ed.querySelector("ha-form")._schema.map((x) => x.name).join(", "));
+  out.textContent = log.join("\n\n");
+}
+</script>
 </body>
 </html>

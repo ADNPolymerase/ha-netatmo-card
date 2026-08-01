@@ -281,11 +281,11 @@ class NetatmoCard extends HTMLElement {
     const dev = entity ? ntDeviceFields(hass, entity, "indoor") : null;
     const indoor = !dev || dev.has("co2_entity") || dev.has("pressure_entity") || dev.has("noise_entity");
     const type = indoor ? "indoor" : "outdoor";
-    return { entity: entity, module_type: type, ...(entity ? ntAutofill(hass, { entity, module_type: type }) : {}) };
+    return { module_type: type, entity: entity, ...(entity ? ntAutofill(hass, { entity, module_type: type }) : {}) };
   }
 
   setConfig(config) {
-    if (!config || !config.entity) throw new Error("Please define an entity (temperature sensor)");
+    if (!config) throw new Error("Please define a configuration");
     const kind = NT_FIELDS[config.module_type] ? config.module_type : "indoor";
     let dec = parseInt(config.decimals, 10);
     if (!(dec >= 0 && dec <= 3)) dec = NT_MAIN[kind].dec;
@@ -704,7 +704,7 @@ class NetatmoCard extends HTMLElement {
     const st = this._hass.states[c.entity];
     const wrap = this._el["nt-wrap"];
 
-    this._el["nt-name"].textContent = c.name || (st && st.attributes.friendly_name) || c.entity;
+    this._el["nt-name"].textContent = c.name || (st && st.attributes.friendly_name) || c.entity || "";
     this._el["nt-label"].textContent = c.label || "";
     if (this._el["nt-hist-label"]) {
       this._el["nt-hist-label"].textContent = t.hist;
@@ -881,7 +881,15 @@ class NetatmoCard extends HTMLElement {
 
 class NetatmoCardEditor extends HTMLElement {
   setConfig(config) { this._config = { ...config }; this._render(); }
-  set hass(hass) { this._hass = hass; this._render(); }
+
+  // Only render on the first hass and on config changes. Re-rendering on every state
+  // update reassigns the form schema and closes any dropdown the user has open.
+  set hass(hass) {
+    const first = !this._hass;
+    this._hass = hass;
+    if (this._form) this._form.hass = hass;
+    if (first) this._render();
+  }
 
   _render() {
     if (!this._hass || !this._config) return;
@@ -894,9 +902,12 @@ class NetatmoCardEditor extends HTMLElement {
       this._form.computeLabel = (s) => s.label || s.name;
       this._form.addEventListener("value-changed", (ev) => {
         const v = ev.detail.value;
-        const out = { type: "custom:netatmo-card", entity: v.entity };
-        const kind = v.module_type === "outdoor" ? "outdoor" : "indoor";
-        out.module_type = kind;
+        const kind = NT_FIELDS[v.module_type] ? v.module_type : "indoor";
+        const out = { type: "custom:netatmo-card", module_type: kind };
+        // A temperature sensor cannot be the main reading of a rain gauge.
+        const mainSt = v.entity && this._hass.states[v.entity];
+        const wanted = NT_MAIN[kind].device_class;
+        if (v.entity && (!mainSt || mainSt.attributes.device_class === wanted)) out.entity = v.entity;
         if (v.name) out.name = v.name;
         if (v.label) out.label = v.label;
         // Switching module type drops the readings the other one does not have.
@@ -963,14 +974,14 @@ class NetatmoCardEditor extends HTMLElement {
 
     const mainLabel = kind === "rain" ? t.entRain : kind === "wind" ? t.entWind : t.entity;
     this._form.schema = [
-      { name: "entity", label: mainLabel,
-        selector: { entity: { domain: "sensor", device_class: NT_MAIN[kind].device_class } } },
       { name: "module_type", label: t.modType, selector: { select: { mode: "dropdown", options: [
         { value: "indoor", label: t.mtIndoor },
         { value: "outdoor", label: t.mtOutdoor },
         { value: "rain", label: t.mtRain },
         { value: "wind", label: t.mtWind },
       ] } } },
+      { name: "entity", label: mainLabel,
+        selector: { entity: { domain: "sensor", device_class: NT_MAIN[kind].device_class } } },
       { name: "name", label: t.name, selector: { text: {} } },
       { name: "label", label: t.label, selector: { text: {} } },
       ...NT_FIELDS[kind].filter(has).map((k) => ({ name: k, label: labels[k], selector: NT_SELECTOR[k] })),
