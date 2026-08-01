@@ -1,0 +1,6 @@
+* text=auto
+*.js text eol=lf
+
+dist/netatmo-card.js linguist-vendored=false
+dist/netatmo-card.js linguist-generated=false
+dist/netatmo-card.js linguist-detectable=true

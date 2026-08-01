@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://brands.home-assistant.io/netatmo/logo.png" alt="Netatmo" height="80">
+</p>
+
 # Netatmo Card
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
