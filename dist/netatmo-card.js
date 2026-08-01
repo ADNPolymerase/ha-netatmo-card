@@ -1,4 +1,4 @@
-const CARD_VERSION = "0.3.2";
+const CARD_VERSION = "0.4.0";
 
 console.info(
   "%c NETATMO-CARD %c v" + CARD_VERSION + " ",
