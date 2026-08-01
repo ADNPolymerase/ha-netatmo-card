@@ -42,8 +42,13 @@ quality, like the real one.
 
 Works with any sensor, not only the Netatmo integration — a DIY or Zigbee temperature/humidity/CO₂ set renders just as well.
 
-The `wind` type is written against the entities the Netatmo integration exposes but has not been
-tested on real hardware, since I do not own the anemometer. Reports welcome.
+The `wind` type is written against the entities the Netatmo integration exposes, checked against
+its source and against a public weather station, but it has not been tested on a real anemometer
+since I do not own one. Two things to know: Netatmo enables **wind speed and wind direction** by
+default and leaves **gust speed and the numeric angle disabled**, so enable them on the device page
+if you want them. And the direction it enables by default is an enum of cardinals, not degrees. The
+card takes either, showing `215° SW` for degrees and `SW` for cardinals, and the vane arrow works
+with both.
 
 ## Installation (HACS)
 

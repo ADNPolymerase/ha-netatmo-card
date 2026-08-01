@@ -189,12 +189,24 @@ const NT_SELECTOR = {
   rain_hour_entity: { entity: { domain: "sensor", device_class: "precipitation" } },
   rain_rate_entity: { entity: { domain: "sensor", device_class: ["precipitation", "precipitation_intensity"] } },
   gust_entity: { entity: { domain: "sensor", device_class: "wind_speed" } },
-  wind_direction_entity: { entity: { domain: "sensor", device_class: "wind_direction" } },
+  wind_direction_entity: { entity: { domain: "sensor", device_class: ["wind_direction", "enum"] } },
 };
 
 const NT_TREND_RE = /trend|tendance|tendenz|tendencia|tendenza/i;
 const NT_PRESS_RE = /pressure|pression|druck|presion|presión|pressione/i;
 const NT_GUST_RE = /gust|rafale|b(ö|oe)e|raffica|racha|windstoot/i;
+
+// Netatmo ships two direction sensors: `windangle_value` in degrees (device_class
+// wind_direction, disabled by default) and `windangle`, an enum of cardinals that IS
+// enabled by default. Both are accepted; the enum is mapped back onto an angle.
+const NT_ENUM_DIRS = ["n", "ne", "e", "se", "s", "sw", "w", "nw"];
+function ntWindAngle(st) {
+  if (!st) return NaN;
+  const n = parseFloat(st.state);
+  if (!isNaN(n)) return ((n % 360) + 360) % 360;
+  const i = NT_ENUM_DIRS.indexOf(String(st.state).trim().toLowerCase());
+  return i < 0 ? NaN : i * 45;
+}
 const NT_HOUR_RE = /hour|heure|stunde|hora|ora|uur/i;
 
 function ntSiblings(hass, entity) {
@@ -227,8 +239,10 @@ function ntResolve(hass, entity, kind) {
       k = NT_HOUR_RE.test(e) ? "rain_hour_entity" : "rain_rate_entity";
     } else if (kind === "wind" && dc === "wind_speed") {
       k = NT_GUST_RE.test(e) ? "gust_entity" : null;
-    } else if (kind === "wind" && dc === "wind_direction") {
+    } else if (kind === "wind" && (dc === "wind_direction" || dc === "enum")) {
       k = NT_GUST_RE.test(e) ? null : "wind_direction_entity";
+      // Degrees beat cardinals when the module exposes both.
+      if (k && out[k] && dc === "wind_direction") out[k] = e;
     } else if (dc) {
       k = NT_BY_CLASS[dc] || null;
     } else if (NT_TREND_RE.test(e) && !NT_PRESS_RE.test(e)) {
@@ -712,7 +726,7 @@ class NetatmoCard extends HTMLElement {
     const slot = this._el["nt-trend"];
     if (this._kind() === "wind") {
       // The angle is where the wind comes from, so the arrow points the other way.
-      const a = this._num(c.wind_direction_entity);
+      const a = ntWindAngle(this._hass.states[c.wind_direction_entity]);
       slot.innerHTML = isNaN(a) ? "" :
         `<svg width="15" height="15" viewBox="0 0 24 24" style="transform:rotate(${((a + 180) % 360).toFixed(0)}deg);">
            <path d="M12 3 L18.5 20.5 L12 16.2 L5.5 20.5 Z" fill="currentColor"/></svg>`;
@@ -737,10 +751,15 @@ class NetatmoCard extends HTMLElement {
       const st = this._hass.states[c[m.cfg]];
       const n = st ? parseFloat(st.state) : NaN;
       const unit = st ? st.attributes.unit_of_measurement || "" : "";
-      const txt = m.key === "wind_dir" && !isNaN(n)
-        ? Math.round(n) + "° " + t.dirs[Math.round((((n % 360) + 360) % 360) / 45) % 8]
-        : ntFmt(n, m.dec, m.group) + (unit ? " " + unit : "");
-      this._el["nt-val-" + m.key].textContent = isNaN(n) ? "—" : txt;
+      let txt;
+      if (m.key === "wind_dir") {
+        const a = ntWindAngle(st);
+        txt = isNaN(a) ? "—"
+          : (isNaN(n) ? "" : Math.round(a) + "° ") + t.dirs[Math.round(a / 45) % 8];
+      } else {
+        txt = isNaN(n) ? "—" : ntFmt(n, m.dec, m.group) + (unit ? " " + unit : "");
+      }
+      this._el["nt-val-" + m.key].textContent = txt;
       let color = "";
       let hint = "";
       if (m.key === "co2" && !isNaN(n)) {

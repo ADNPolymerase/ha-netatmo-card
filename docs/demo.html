@@ -126,7 +126,8 @@ const states = {};
  st("sensor.anemometre_vitesse_du_vent", 23, { unit_of_measurement: "km/h", device_class: "wind_speed",
     friendly_name: lang === "fr" ? "Anémomètre" : "Anemometer" }),
  st("sensor.anemometre_force_des_rafales", 47, { unit_of_measurement: "km/h", device_class: "wind_speed" }),
- st("sensor.anemometre_direction_du_vent", 215, { unit_of_measurement: "°", device_class: "wind_direction" }),
+ st("sensor.anemometre_direction_du_vent", "sw", { device_class: "enum",
+    options: ["n", "ne", "e", "se", "s", "sw", "w", "nw"] }),
  st("sensor.anemometre_batterie", 54, { unit_of_measurement: "%", device_class: "battery" }),
  st("binary_sensor.anemometre_connectivite", "on", { device_class: "connectivity" }),
 ].forEach((s) => (states[s.entity_id] = s));
