@@ -44,6 +44,29 @@ class StubIcon extends HTMLElement {
   }
 }
 customElements.define("ha-icon", StubIcon);
+
+// Stub ha-form: lists the fields the editor decided to offer, so the harness can check
+// that irrelevant options are filtered out per module type and per device.
+class StubForm extends HTMLElement {
+  set hass(v) { this._h = v; }
+  set data(v) { this._data = v; this._draw(); }
+  get data() { return this._data; }
+  set schema(v) { this._schema = v; this._draw(); }
+  _draw() {
+    if (!this._schema) return;
+    this.innerHTML = '<ol style="margin:0;padding-left:22px;font:12px/1.7 ui-monospace,monospace;">' +
+      this._schema.map((sc) => {
+        const val = this._data && this._data[sc.name];
+        const sel = sc.selector && sc.selector.entity;
+        const dc = sel && sel.device_class;
+        const inc = sel && sel.include_entities;
+        const hint = dc ? ' <span style="color:#0a7">[' + [].concat(dc).join("|") + ']</span>'
+          : inc ? ' <span style="color:#0a7">[' + inc.length + ' entites]</span>' : "";
+        return "<li>" + sc.name + hint + (val ? ' <span style="color:#888">= ' + val + "</span>" : "") + "</li>";
+      }).join("") + "</ol>";
+  }
+}
+customElements.define("ha-form", StubForm);
 </script>
 <script src="../dist/netatmo-card.js"></script>
 <div id="wrap">
@@ -51,6 +74,7 @@ customElements.define("ha-icon", StubIcon);
   <netatmo-card id="c2"></netatmo-card>
   <netatmo-card id="c3"></netatmo-card>
 </div>
+<div id="eds" style="display:flex;gap:24px;margin-top:24px;flex-wrap:wrap;"></div>
 <script>
 const q = new URLSearchParams(location.search);
 const lang = q.get("lang") === "en" ? "en" : "fr";
@@ -60,9 +84,11 @@ if (q.get("shot")) { document.body.classList.add("shot"); document.documentEleme
 function st(entity_id, state, attributes) {
   return { entity_id, state: String(state), attributes: attributes || {} };
 }
+// Entity registry, so the editor resolves siblings by device like real HA does.
+const registry = {};
 function mkHass(states) {
   return {
-    language: lang, locale: { language: lang }, states, entities: {}, devices: {},
+    language: lang, locale: { language: lang }, states, entities: registry, devices: {},
     callService: () => {}, callApi: () => Promise.resolve([[]]),
   };
 }
@@ -82,6 +108,14 @@ const states = {};
  st("sensor.capteur_exterieur_batterie", 82, { unit_of_measurement: "%", device_class: "battery" }),
  st("binary_sensor.capteur_exterieur_connectivite", "on", { device_class: "connectivity" }),
 ].forEach((s) => (states[s.entity_id] = s));
+
+// His real modules: the indoor station has no battery, the outdoor one has no CO2 /
+// noise / pressure, and both have their trend sensors disabled.
+for (const e of Object.keys(states)) {
+  registry[e] = { device_id: e.includes("_interieur_") ? "dev_in" : "dev_out" };
+}
+delete states["sensor.capteur_interieur_tendance"];
+delete registry["sensor.capteur_interieur_tendance"];
 
 const c1 = document.getElementById("c1");
 c1.setConfig({
@@ -122,6 +156,23 @@ c3.setConfig({
   label: "sand",
 });
 c3.hass = mkHass(states);
+
+if (q.get("editor")) {
+  document.getElementById("wrap").style.display = "none";
+  for (const cfg of [
+    { type: "custom:netatmo-card", module_type: "indoor", entity: "sensor.capteur_interieur_temperature" },
+    { type: "custom:netatmo-card", module_type: "outdoor", entity: "sensor.capteur_exterieur_temperature" },
+  ]) {
+    const box = document.createElement("div");
+    box.style.cssText = "width:340px;background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.12);";
+    box.innerHTML = '<div style="font:600 13px sans-serif;margin-bottom:8px;">' + cfg.module_type + "</div>";
+    const ed = document.createElement("netatmo-card-editor");
+    ed.hass = mkHass(states);
+    ed.setConfig(cfg);
+    box.appendChild(ed);
+    document.getElementById("eds").appendChild(box);
+  }
+}
 </script>
 </body>
 </html>

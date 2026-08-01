@@ -129,6 +129,28 @@ const NT_BY_CLASS = {
   connectivity: "connectivity_entity",
 };
 
+// What each module actually measures. The outdoor module has no CO2, noise or pressure —
+// those live in the indoor base station.
+const NT_FIELDS = {
+  indoor: ["humidity_entity", "co2_entity", "noise_entity", "pressure_entity",
+    "trend_entity", "battery_entity", "connectivity_entity"],
+  outdoor: ["humidity_entity", "trend_entity", "battery_entity", "connectivity_entity"],
+};
+
+// Narrows each picker to sensors that can plausibly answer it.
+const NT_SELECTOR = {
+  humidity_entity: { entity: { domain: "sensor", device_class: "humidity" } },
+  co2_entity: { entity: { domain: "sensor", device_class: "carbon_dioxide" } },
+  noise_entity: { entity: { domain: "sensor", device_class: "sound_pressure" } },
+  pressure_entity: { entity: { domain: "sensor", device_class: ["atmospheric_pressure", "pressure"] } },
+  trend_entity: { entity: { domain: "sensor" } },
+  battery_entity: { entity: { domain: "sensor", device_class: "battery" } },
+  connectivity_entity: { entity: { domain: "binary_sensor", device_class: "connectivity" } },
+};
+
+const NT_TREND_RE = /trend|tendance|tendenz|tendencia|tendenza/i;
+const NT_PRESS_RE = /pressure|pression|druck|presion|presión|pressione/i;
+
 function ntSiblings(hass, entity) {
   // Entities of the same device, or failing that entities sharing the object_id prefix.
   const reg = hass.entities || {};
@@ -151,12 +173,28 @@ function ntAutofill(hass, config) {
     const dc = hass.states[e].attributes.device_class;
     const key = NT_BY_CLASS[dc];
     if (key && !config[key] && !out[key]) out[key] = e;
-    if (!key && !config.trend_entity && !out.trend_entity && /trend|tendance|tendenz|tendencia|tendenza/i.test(e)
-        && !/pressure|pression|druck|presion|presión|pressione/i.test(e)) {
+    if (!key && !config.trend_entity && !out.trend_entity && NT_TREND_RE.test(e) && !NT_PRESS_RE.test(e)) {
       out.trend_entity = e;
     }
   }
+  const allowed = NT_FIELDS[config.module_type === "outdoor" ? "outdoor" : "indoor"];
+  for (const k of Object.keys(out)) if (!allowed.includes(k)) delete out[k];
   return out;
+}
+
+// The config keys the device behind `entity` can actually fill. null when no device is
+// resolvable, in which case the caller falls back to everything the module type allows.
+function ntDeviceFields(hass, entity) {
+  if (!entity || !hass.states[entity]) return null;
+  const sibs = ntSiblings(hass, entity);
+  if (!sibs.length) return null;
+  const keys = new Set();
+  for (const e of sibs) {
+    const k = NT_BY_CLASS[hass.states[e].attributes.device_class];
+    if (k) keys.add(k);
+    else if (NT_TREND_RE.test(e) && !NT_PRESS_RE.test(e)) keys.add("trend_entity");
+  }
+  return keys;
 }
 
 class NetatmoCard extends HTMLElement {
@@ -168,9 +206,10 @@ class NetatmoCard extends HTMLElement {
     );
     const netatmo = temps.filter((e) => /netatmo/i.test(hass.states[e].attributes.attribution || ""));
     const entity = netatmo[0] || temps[0] || "";
-    const found = entity ? ntAutofill(hass, { entity }) : {};
-    const indoor = found.co2_entity || found.pressure_entity || found.noise_entity;
-    return { entity: entity, module_type: indoor ? "indoor" : "outdoor", ...found };
+    const dev = entity ? ntDeviceFields(hass, entity) : null;
+    const indoor = !dev || dev.has("co2_entity") || dev.has("pressure_entity") || dev.has("noise_entity");
+    const type = indoor ? "indoor" : "outdoor";
+    return { entity: entity, module_type: type, ...(entity ? ntAutofill(hass, { entity, module_type: type }) : {}) };
   }
 
   setConfig(config) {
@@ -304,7 +343,8 @@ class NetatmoCard extends HTMLElement {
     card.style.setProperty("--nt-accent", c.accent_color);
     this._card = card;
 
-    const rows = NT_METRICS.filter((m) => c[m.cfg]).map((m) => `
+    const allowed = NT_FIELDS[this._kind()];
+    const rows = NT_METRICS.filter((m) => c[m.cfg] && allowed.includes(m.cfg)).map((m) => `
       <div class="nt-row" id="nt-row-${m.key}" data-entity="${c[m.cfg]}">
         <ha-icon icon="${m.icon}" id="nt-ico-${m.key}"></ha-icon>
         <span class="nt-rv" id="nt-val-${m.key}">—</span>
@@ -324,12 +364,14 @@ class NetatmoCard extends HTMLElement {
         .nt-unit { font-size: 1em; font-weight: 400; color: var(--secondary-text-color); }
         .nt-trend { font-size: 0.95em; color: var(--secondary-text-color); margin-left: 2px; }
         .nt-label { font-size: 0.85em; color: var(--secondary-text-color); }
-        .nt-rows { display: grid; grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
-          gap: 3px 8px; margin-top: 10px; }
-        .nt-row { display: flex; align-items: center; gap: 4px; min-width: 0; }
-        .nt-row ha-icon { --mdc-icon-size: 17px; width: 17px; height: 17px; flex: none;
+        .nt-rows { display: grid; grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
+          gap: 4px 8px; margin-top: 10px; }
+        .nt-row { display: grid; grid-template-columns: 18px minmax(0, 1fr);
+          align-items: center; column-gap: 6px; min-width: 0; }
+        .nt-row ha-icon { display: flex; align-items: center; justify-content: center;
+          width: 18px; height: 18px; --mdc-icon-size: 18px; line-height: 0;
           color: var(--nt-row-color, var(--secondary-text-color)); }
-        .nt-rv { font-size: 0.88em; color: var(--primary-text-color);
+        .nt-rv { font-size: 0.88em; line-height: 18px; color: var(--primary-text-color);
           overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .nt-halo > * { fill: var(--nt-glow, transparent); opacity: var(--nt-glow-op, 0); transition: opacity 0.6s; }
         .nt-lens { fill: var(--nt-glow, transparent); opacity: var(--nt-lens-op, 0); transition: opacity 0.6s; }
@@ -615,19 +657,20 @@ class NetatmoCardEditor extends HTMLElement {
       this._form.addEventListener("value-changed", (ev) => {
         const v = ev.detail.value;
         const out = { type: "custom:netatmo-card", entity: v.entity };
-        out.module_type = v.module_type === "outdoor" ? "outdoor" : "indoor";
+        const kind = v.module_type === "outdoor" ? "outdoor" : "indoor";
+        out.module_type = kind;
         if (v.name) out.name = v.name;
         if (v.label) out.label = v.label;
-        for (const k of ["humidity_entity", "co2_entity", "noise_entity", "pressure_entity",
-          "trend_entity", "battery_entity", "connectivity_entity"]) {
-          if (v[k]) out[k] = v[k];
-        }
+        // Switching module type drops the readings the other one does not have.
+        for (const k of NT_FIELDS[kind]) if (v[k]) out[k] = v[k];
         if (v.decimals != null && v.decimals !== "" && parseInt(v.decimals, 10) !== 1) out.decimals = parseInt(v.decimals, 10);
         if (v.body_color && v.body_color !== "aluminium") out.body_color = v.body_color;
-        if (v.show_glow === false) out.show_glow = false;
+        if (kind === "indoor") {
+          if (v.show_glow === false) out.show_glow = false;
+          if (v.co2_good != null && v.co2_good !== "" && parseFloat(v.co2_good) !== 1000) out.co2_good = parseFloat(v.co2_good);
+          if (v.co2_bad != null && v.co2_bad !== "" && parseFloat(v.co2_bad) !== 2000) out.co2_bad = parseFloat(v.co2_bad);
+        }
         if (v.accent_color && v.accent_color !== "#2f8fd0") out.accent_color = v.accent_color;
-        if (v.co2_good != null && v.co2_good !== "" && parseFloat(v.co2_good) !== 1000) out.co2_good = parseFloat(v.co2_good);
-        if (v.co2_bad != null && v.co2_bad !== "" && parseFloat(v.co2_bad) !== 2000) out.co2_bad = parseFloat(v.co2_bad);
         if (v.show_history) out.show_history = true;
         if (v.history_entity) out.history_entity = v.history_entity;
         if (v.language) out.language = v.language;
@@ -640,7 +683,7 @@ class NetatmoCardEditor extends HTMLElement {
     }
 
     this._form.hass = this._hass;
-    this._form.data = {
+    const data = {
       entity: c.entity || "",
       module_type: c.module_type === "outdoor" ? "outdoor" : "indoor",
       name: c.name || "",
@@ -662,6 +705,18 @@ class NetatmoCardEditor extends HTMLElement {
       history_entity: c.history_entity || "",
       language: c.language || "",
     };
+    this._form.data = data;
+    const kind = data.module_type;
+    const dev = ntDeviceFields(this._hass, c.entity);
+    // A field is offered when the module type has it AND the device exposes it
+    // (or it is already set, so it stays clearable).
+    const has = (k) => NT_FIELDS[kind].includes(k) && (!!c[k] || !dev || dev.has(k));
+    const labels = { humidity_entity: t.humidity, co2_entity: t.co2, noise_entity: t.noise,
+      pressure_entity: t.pressure, trend_entity: t.trend, battery_entity: t.battery,
+      connectivity_entity: t.connectivity };
+    // The 24 h chart can only plot a reading this card already shows.
+    const charted = [c.entity, c.humidity_entity, c.co2_entity, c.noise_entity, c.pressure_entity].filter(Boolean);
+
     this._form.schema = [
       { name: "entity", label: t.entity, selector: { entity: { domain: "sensor", device_class: "temperature" } } },
       { name: "module_type", label: t.modType, selector: { select: { mode: "dropdown", options: [
@@ -670,13 +725,7 @@ class NetatmoCardEditor extends HTMLElement {
       ] } } },
       { name: "name", label: t.name, selector: { text: {} } },
       { name: "label", label: t.label, selector: { text: {} } },
-      { name: "humidity_entity", label: t.humidity, selector: { entity: { domain: "sensor" } } },
-      { name: "co2_entity", label: t.co2, selector: { entity: { domain: "sensor" } } },
-      { name: "noise_entity", label: t.noise, selector: { entity: { domain: "sensor" } } },
-      { name: "pressure_entity", label: t.pressure, selector: { entity: { domain: "sensor" } } },
-      { name: "trend_entity", label: t.trend, selector: { entity: { domain: "sensor" } } },
-      { name: "battery_entity", label: t.battery, selector: { entity: { domain: "sensor" } } },
-      { name: "connectivity_entity", label: t.connectivity, selector: { entity: { domain: ["binary_sensor", "sensor"] } } },
+      ...NT_FIELDS[kind].filter(has).map((k) => ({ name: k, label: labels[k], selector: NT_SELECTOR[k] })),
       { name: "decimals", label: t.decimals, selector: { number: { mode: "box", step: 1, min: 0, max: 3 } } },
       { name: "body_color", label: t.body, selector: { select: { mode: "dropdown", options: [
         { value: "aluminium", label: t.bodyAlu },
@@ -684,12 +733,14 @@ class NetatmoCardEditor extends HTMLElement {
         { value: "mint", label: t.bodyMint },
         { value: "graphite", label: t.bodyGraphite },
       ] } } },
-      { name: "show_glow", label: t.glow, selector: { boolean: {} } },
-      { name: "co2_good", label: t.co2Good, selector: { number: { mode: "box", step: 50, min: 0 } } },
-      { name: "co2_bad", label: t.co2Bad, selector: { number: { mode: "box", step: 50, min: 0 } } },
+      ...(has("co2_entity") ? [
+        { name: "show_glow", label: t.glow, selector: { boolean: {} } },
+        { name: "co2_good", label: t.co2Good, selector: { number: { mode: "box", step: 50, min: 0 } } },
+        { name: "co2_bad", label: t.co2Bad, selector: { number: { mode: "box", step: 50, min: 0 } } },
+      ] : []),
       { name: "accent_color", label: t.accent, selector: { text: {} } },
       { name: "show_history", label: t.histOpt, selector: { boolean: {} } },
-      { name: "history_entity", label: t.histEnt, selector: { entity: { domain: "sensor" } } },
+      { name: "history_entity", label: t.histEnt, selector: { entity: { include_entities: charted } } },
       { name: "language", label: t.language, selector: { select: { mode: "dropdown", options:
         [{ value: "", label: t.auto }].concat(Object.keys(NT_LANGNAMES).map((l) => ({ value: l, label: NT_LANGNAMES[l] }))) } } },
     ];
