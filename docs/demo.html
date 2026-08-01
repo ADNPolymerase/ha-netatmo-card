@@ -15,7 +15,13 @@
   #wrap { display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-start; }
   html.shot { padding: 0; }
   body.shot { padding: 16px; width: max-content; }
-  body.shot #c3 { display: none; }
+  body.shot #wrap { width: 664px; }
+  /* zoomcss: inspect the drawings on their own */
+  body.zoom ha-card { width: 250px; }
+  body.zoom .nt-mod { width: 180px !important; }
+  body.zoom .nt-info { display: none !important; }
+  body.zoom .nt-corner { display: none !important; }
+  body.zoom .nt-hist-toggle { display: none !important; }
   ha-card { display: block; width: 320px; background: #ffffff; border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08); }
 </style>
@@ -73,12 +79,14 @@ customElements.define("ha-form", StubForm);
   <netatmo-card id="c1"></netatmo-card>
   <netatmo-card id="c2"></netatmo-card>
   <netatmo-card id="c3"></netatmo-card>
+  <netatmo-card id="c4"></netatmo-card>
 </div>
 <div id="eds" style="display:flex;gap:24px;margin-top:24px;flex-wrap:wrap;"></div>
 <script>
 const q = new URLSearchParams(location.search);
 const lang = q.get("lang") === "en" ? "en" : "fr";
 const co2 = parseFloat(q.get("co2") || "417");
+if (q.get("zoom")) document.body.classList.add("zoom");
 if (q.get("shot")) { document.body.classList.add("shot"); document.documentElement.classList.add("shot"); }
 
 function st(entity_id, state, attributes) {
@@ -107,12 +115,28 @@ const states = {};
  st("sensor.capteur_exterieur_humidite", 42, { unit_of_measurement: "%", device_class: "humidity" }),
  st("sensor.capteur_exterieur_batterie", 82, { unit_of_measurement: "%", device_class: "battery" }),
  st("binary_sensor.capteur_exterieur_connectivite", "on", { device_class: "connectivity" }),
+ st("sensor.pluviometre_precipitation_aujourd_hui", 4.6, { unit_of_measurement: "mm", device_class: "precipitation",
+    state_class: "total_increasing", friendly_name: lang === "fr" ? "Pluviomètre" : "Rain gauge" }),
+ st("sensor.pluviometre_precipitation", 0.3, { unit_of_measurement: "mm", device_class: "precipitation",
+    state_class: "measurement" }),
+ st("sensor.pluviometre_precipitations_dans_l_heure_precedente", 1.2, { unit_of_measurement: "mm",
+    device_class: "precipitation", state_class: "measurement" }),
+ st("sensor.pluviometre_batterie", 69, { unit_of_measurement: "%", device_class: "battery" }),
+ st("binary_sensor.pluviometre_connectivite", "on", { device_class: "connectivity" }),
+ st("sensor.anemometre_vitesse_du_vent", 23, { unit_of_measurement: "km/h", device_class: "wind_speed",
+    friendly_name: lang === "fr" ? "Anémomètre" : "Anemometer" }),
+ st("sensor.anemometre_force_des_rafales", 47, { unit_of_measurement: "km/h", device_class: "wind_speed" }),
+ st("sensor.anemometre_direction_du_vent", 215, { unit_of_measurement: "°", device_class: "wind_direction" }),
+ st("sensor.anemometre_batterie", 54, { unit_of_measurement: "%", device_class: "battery" }),
+ st("binary_sensor.anemometre_connectivite", "on", { device_class: "connectivity" }),
 ].forEach((s) => (states[s.entity_id] = s));
 
 // His real modules: the indoor station has no battery, the outdoor one has no CO2 /
 // noise / pressure, and both have their trend sensors disabled.
 for (const e of Object.keys(states)) {
-  registry[e] = { device_id: e.includes("_interieur_") ? "dev_in" : "dev_out" };
+  registry[e] = { device_id: e.includes("_interieur_") ? "dev_in"
+    : e.includes("pluviometre") ? "dev_rain"
+    : e.includes("anemometre") ? "dev_wind" : "dev_out" };
 }
 delete states["sensor.capteur_interieur_tendance"];
 delete registry["sensor.capteur_interieur_tendance"];
@@ -148,20 +172,36 @@ c2.hass = mkHass(states);
 const c3 = document.getElementById("c3");
 c3.setConfig({
   type: "custom:netatmo-card",
-  entity: "sensor.capteur_exterieur_temperature",
-  module_type: "outdoor",
-  body_color: "sand",
-  humidity_entity: "sensor.capteur_exterieur_humidite",
-  battery_entity: "sensor.capteur_exterieur_batterie",
-  label: "sand",
+  module_type: "rain",
+  entity: "sensor.pluviometre_precipitation_aujourd_hui",
+  rain_hour_entity: "sensor.pluviometre_precipitations_dans_l_heure_precedente",
+  rain_rate_entity: "sensor.pluviometre_precipitation",
+  battery_entity: "sensor.pluviometre_batterie",
+  connectivity_entity: "binary_sensor.pluviometre_connectivite",
+  label: lang === "fr" ? "Jardin" : "Garden",
 });
 c3.hass = mkHass(states);
+
+const c4 = document.getElementById("c4");
+c4.setConfig({
+  type: "custom:netatmo-card",
+  module_type: "wind",
+  entity: "sensor.anemometre_vitesse_du_vent",
+  gust_entity: "sensor.anemometre_force_des_rafales",
+  wind_direction_entity: "sensor.anemometre_direction_du_vent",
+  battery_entity: "sensor.anemometre_batterie",
+  connectivity_entity: "binary_sensor.anemometre_connectivite",
+  label: lang === "fr" ? "Toiture" : "Roof",
+});
+c4.hass = mkHass(states);
 
 if (q.get("editor")) {
   document.getElementById("wrap").style.display = "none";
   for (const cfg of [
     { type: "custom:netatmo-card", module_type: "indoor", entity: "sensor.capteur_interieur_temperature" },
     { type: "custom:netatmo-card", module_type: "outdoor", entity: "sensor.capteur_exterieur_temperature" },
+    { type: "custom:netatmo-card", module_type: "rain", entity: "sensor.pluviometre_precipitation_aujourd_hui" },
+    { type: "custom:netatmo-card", module_type: "wind", entity: "sensor.anemometre_vitesse_du_vent" },
   ]) {
     const box = document.createElement("div");
     box.style.cssText = "width:340px;background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.12);";

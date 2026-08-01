@@ -11,7 +11,11 @@ const NT_LANGNAMES = { en: "English", fr: "Français", de: "Deutsch", es: "Espa�
 const NT_T = {
   en: { entity: "Temperature sensor", name: "Name", label: "Subtitle", decimals: "Decimals", language: "Language", auto: "Auto",
     unavailable: "Unavailable",
-    modType: "Module type", mtIndoor: "Indoor", mtOutdoor: "Outdoor",
+    modType: "Module type", mtIndoor: "Indoor", mtOutdoor: "Outdoor", mtRain: "Rain gauge", mtWind: "Anemometer",
+    entRain: "Daily rainfall sensor", entWind: "Wind speed sensor",
+    rainHour: "Rain in the previous hour", rainRate: "Rain since last reading",
+    gust: "Gust speed entity", windDir: "Wind direction entity",
+    dirs: ["N", "NE", "E", "SE", "S", "SW", "W", "NW"], windFrom: "Wind from",
     humidity: "Humidity entity", co2: "CO₂ entity", noise: "Noise entity", pressure: "Pressure entity",
     trend: "Temperature trend entity", battery: "Battery entity", connectivity: "Connectivity entity",
     body: "Module finish", bodyAlu: "Aluminium", bodySand: "Sand", bodyMint: "Mint", bodyGraphite: "Graphite",
@@ -24,7 +28,11 @@ const NT_T = {
     filled: "Filled in: ", fillNone: "Nothing more to fill in." },
   fr: { entity: "Capteur de température", name: "Nom", label: "Sous-titre", decimals: "Décimales", language: "Langue", auto: "Auto",
     unavailable: "Indisponible",
-    modType: "Type de module", mtIndoor: "Intérieur", mtOutdoor: "Extérieur",
+    modType: "Type de module", mtIndoor: "Intérieur", mtOutdoor: "Extérieur", mtRain: "Pluviomètre", mtWind: "Anémomètre",
+    entRain: "Capteur de pluie du jour", entWind: "Capteur de vitesse du vent",
+    rainHour: "Pluie de l'heure précédente", rainRate: "Pluie depuis le dernier relevé",
+    gust: "Entité rafales", windDir: "Entité direction du vent",
+    dirs: ["N", "NE", "E", "SE", "S", "SO", "O", "NO"], windFrom: "Vent de",
     humidity: "Entité humidité", co2: "Entité CO₂", noise: "Entité bruit", pressure: "Entité pression",
     trend: "Entité tendance de la température", battery: "Entité batterie", connectivity: "Entité connectivité",
     body: "Finition du module", bodyAlu: "Aluminium", bodySand: "Sable", bodyMint: "Menthe", bodyGraphite: "Graphite",
@@ -37,7 +45,11 @@ const NT_T = {
     filled: "Complété : ", fillNone: "Rien de plus à compléter." },
   de: { entity: "Temperatursensor", name: "Name", label: "Untertitel", decimals: "Dezimalstellen", language: "Sprache", auto: "Auto",
     unavailable: "Nicht verfügbar",
-    modType: "Modultyp", mtIndoor: "Innen", mtOutdoor: "Außen",
+    modType: "Modultyp", mtIndoor: "Innen", mtOutdoor: "Außen", mtRain: "Regenmesser", mtWind: "Windmesser",
+    entRain: "Regensensor (Tagessumme)", entWind: "Windgeschwindigkeitssensor",
+    rainHour: "Regen in der letzten Stunde", rainRate: "Regen seit der letzten Messung",
+    gust: "Böen-Entität", windDir: "Windrichtungs-Entität",
+    dirs: ["N", "NO", "O", "SO", "S", "SW", "W", "NW"], windFrom: "Wind aus",
     humidity: "Feuchtigkeits-Entität", co2: "CO₂-Entität", noise: "Lärm-Entität", pressure: "Luftdruck-Entität",
     trend: "Entität Temperaturtrend", battery: "Batterie-Entität", connectivity: "Konnektivitäts-Entität",
     body: "Oberfläche des Moduls", bodyAlu: "Aluminium", bodySand: "Sand", bodyMint: "Mint", bodyGraphite: "Graphit",
@@ -50,7 +62,11 @@ const NT_T = {
     filled: "Übernommen: ", fillNone: "Nichts weiter zu übernehmen." },
   es: { entity: "Sensor de temperatura", name: "Nombre", label: "Subtítulo", decimals: "Decimales", language: "Idioma", auto: "Auto",
     unavailable: "No disponible",
-    modType: "Tipo de módulo", mtIndoor: "Interior", mtOutdoor: "Exterior",
+    modType: "Tipo de módulo", mtIndoor: "Interior", mtOutdoor: "Exterior", mtRain: "Pluviómetro", mtWind: "Anemómetro",
+    entRain: "Sensor de lluvia del día", entWind: "Sensor de velocidad del viento",
+    rainHour: "Lluvia en la hora anterior", rainRate: "Lluvia desde la última lectura",
+    gust: "Entidad de rachas", windDir: "Entidad de dirección del viento",
+    dirs: ["N", "NE", "E", "SE", "S", "SO", "O", "NO"], windFrom: "Viento del",
     humidity: "Entidad de humedad", co2: "Entidad de CO₂", noise: "Entidad de ruido", pressure: "Entidad de presión",
     trend: "Entidad de tendencia de temperatura", battery: "Entidad de batería", connectivity: "Entidad de conectividad",
     body: "Acabado del módulo", bodyAlu: "Aluminio", bodySand: "Arena", bodyMint: "Menta", bodyGraphite: "Grafito",
@@ -63,7 +79,11 @@ const NT_T = {
     filled: "Completado: ", fillNone: "Nada más que completar." },
   it: { entity: "Sensore di temperatura", name: "Nome", label: "Sottotitolo", decimals: "Decimali", language: "Lingua", auto: "Auto",
     unavailable: "Non disponibile",
-    modType: "Tipo di modulo", mtIndoor: "Interno", mtOutdoor: "Esterno",
+    modType: "Tipo di modulo", mtIndoor: "Interno", mtOutdoor: "Esterno", mtRain: "Pluviometro", mtWind: "Anemometro",
+    entRain: "Sensore pioggia del giorno", entWind: "Sensore velocità del vento",
+    rainHour: "Pioggia nell'ora precedente", rainRate: "Pioggia dall'ultima lettura",
+    gust: "Entità raffiche", windDir: "Entità direzione del vento",
+    dirs: ["N", "NE", "E", "SE", "S", "SO", "O", "NO"], windFrom: "Vento da",
     humidity: "Entità umidità", co2: "Entità CO₂", noise: "Entità rumore", pressure: "Entità pressione",
     trend: "Entità tendenza della temperatura", battery: "Entità batteria", connectivity: "Entità connettività",
     body: "Finitura del modulo", bodyAlu: "Alluminio", bodySand: "Sabbia", bodyMint: "Menta", bodyGraphite: "Grafite",
@@ -76,7 +96,11 @@ const NT_T = {
     filled: "Completato: ", fillNone: "Nulla da completare." },
   nl: { entity: "Temperatuursensor", name: "Naam", label: "Ondertitel", decimals: "Decimalen", language: "Taal", auto: "Auto",
     unavailable: "Niet beschikbaar",
-    modType: "Moduletype", mtIndoor: "Binnen", mtOutdoor: "Buiten",
+    modType: "Moduletype", mtIndoor: "Binnen", mtOutdoor: "Buiten", mtRain: "Regenmeter", mtWind: "Windmeter",
+    entRain: "Regensensor (dagtotaal)", entWind: "Windsnelheidssensor",
+    rainHour: "Regen in het vorige uur", rainRate: "Regen sinds de laatste meting",
+    gust: "Windstoot-entiteit", windDir: "Windrichting-entiteit",
+    dirs: ["N", "NO", "O", "ZO", "Z", "ZW", "W", "NW"], windFrom: "Wind uit",
     humidity: "Vochtigheids-entiteit", co2: "CO₂-entiteit", noise: "Geluids-entiteit", pressure: "Luchtdruk-entiteit",
     trend: "Entiteit temperatuurtrend", battery: "Batterij-entiteit", connectivity: "Connectiviteits-entiteit",
     body: "Afwerking van de module", bodyAlu: "Aluminium", bodySand: "Zand", bodyMint: "Mint", bodyGraphite: "Grafiet",
@@ -109,6 +133,8 @@ const NT_BODY = {
   sand: ["#897d6e", "#b6a898", "#d3c5b3", "#e0d4c4", "#cfc2b0", "#bdb09e", "#a39684", "#bcb09e", "#83776a"],
   mint: ["#8ca097", "#b6c8bf", "#d6e3dc", "#e3ede7", "#d2dfd8", "#bfd0c8", "#a5b8af", "#bdcec6", "#879b92"],
   graphite: ["#232629", "#3d4145", "#5c6165", "#6f7479", "#5e6367", "#4b4f53", "#36393d", "#4c5054", "#202326"],
+  // Not selectable: the rain gauge and the anemometer only exist in glossy black.
+  gloss: ["#14171b", "#333944", "#59616d", "#767e8a", "#4d5560", "#31373f", "#1e2228", "#2f343c", "#121418"],
 };
 
 const NT_METRICS = [
@@ -116,6 +142,10 @@ const NT_METRICS = [
   { key: "co2", cfg: "co2_entity", icon: "mdi:molecule-co2", dec: 0 },
   { key: "noise", cfg: "noise_entity", icon: "mdi:volume-high", dec: 0 },
   { key: "pressure", cfg: "pressure_entity", icon: "mdi:gauge", dec: 0, group: false },
+  { key: "rain_hour", cfg: "rain_hour_entity", icon: "mdi:weather-pouring", dec: 1 },
+  { key: "rain_rate", cfg: "rain_rate_entity", icon: "mdi:water-outline", dec: 1 },
+  { key: "gust", cfg: "gust_entity", icon: "mdi:weather-windy", dec: 0 },
+  { key: "wind_dir", cfg: "wind_direction_entity", icon: "mdi:compass-outline", dec: 0 },
 ];
 
 // device_class -> config key, used to pull the sibling sensors of a module.
@@ -135,6 +165,16 @@ const NT_FIELDS = {
   indoor: ["humidity_entity", "co2_entity", "noise_entity", "pressure_entity",
     "trend_entity", "battery_entity", "connectivity_entity"],
   outdoor: ["humidity_entity", "trend_entity", "battery_entity", "connectivity_entity"],
+  rain: ["rain_hour_entity", "rain_rate_entity", "battery_entity", "connectivity_entity"],
+  wind: ["gust_entity", "wind_direction_entity", "battery_entity", "connectivity_entity"],
+};
+
+// The main reading of each module, and how many decimals suit it.
+const NT_MAIN = {
+  indoor: { device_class: "temperature", dec: 1 },
+  outdoor: { device_class: "temperature", dec: 1 },
+  rain: { device_class: "precipitation", dec: 1 },
+  wind: { device_class: "wind_speed", dec: 0 },
 };
 
 // Narrows each picker to sensors that can plausibly answer it.
@@ -146,10 +186,16 @@ const NT_SELECTOR = {
   trend_entity: { entity: { domain: "sensor" } },
   battery_entity: { entity: { domain: "sensor", device_class: "battery" } },
   connectivity_entity: { entity: { domain: "binary_sensor", device_class: "connectivity" } },
+  rain_hour_entity: { entity: { domain: "sensor", device_class: "precipitation" } },
+  rain_rate_entity: { entity: { domain: "sensor", device_class: ["precipitation", "precipitation_intensity"] } },
+  gust_entity: { entity: { domain: "sensor", device_class: "wind_speed" } },
+  wind_direction_entity: { entity: { domain: "sensor", device_class: "wind_direction" } },
 };
 
 const NT_TREND_RE = /trend|tendance|tendenz|tendencia|tendenza/i;
 const NT_PRESS_RE = /pressure|pression|druck|presion|presión|pressione/i;
+const NT_GUST_RE = /gust|rafale|b(ö|oe)e|raffica|racha|windstoot/i;
+const NT_HOUR_RE = /hour|heure|stunde|hora|ora|uur/i;
 
 function ntSiblings(hass, entity) {
   // Entities of the same device, or failing that entities sharing the object_id prefix.
@@ -165,36 +211,48 @@ function ntSiblings(hass, entity) {
   );
 }
 
-function ntAutofill(hass, config) {
-  // Returns the config keys that could be filled from the module's other entities.
+// Maps the other entities of the module onto the card's config keys. Kind-aware, because
+// a rain gauge exposes two `precipitation` sensors and an anemometer two `wind_speed` ones:
+// the daily total is told apart by its state_class, the gust by its name.
+function ntResolve(hass, entity, kind) {
   const out = {};
-  if (!config.entity || !hass.states[config.entity]) return out;
-  for (const e of ntSiblings(hass, config.entity)) {
-    const dc = hass.states[e].attributes.device_class;
-    const key = NT_BY_CLASS[dc];
-    if (key && !config[key] && !out[key]) out[key] = e;
-    if (!key && !config.trend_entity && !out.trend_entity && NT_TREND_RE.test(e) && !NT_PRESS_RE.test(e)) {
-      out.trend_entity = e;
+  if (!entity || !hass.states[entity]) return out;
+  const allowed = NT_FIELDS[kind] || NT_FIELDS.indoor;
+  for (const e of ntSiblings(hass, entity)) {
+    const a = hass.states[e].attributes;
+    const dc = a.device_class;
+    let k = null;
+    if (kind === "rain" && dc === "precipitation") {
+      if (a.state_class === "total_increasing" || a.state_class === "total") continue;
+      k = NT_HOUR_RE.test(e) ? "rain_hour_entity" : "rain_rate_entity";
+    } else if (kind === "wind" && dc === "wind_speed") {
+      k = NT_GUST_RE.test(e) ? "gust_entity" : null;
+    } else if (kind === "wind" && dc === "wind_direction") {
+      k = NT_GUST_RE.test(e) ? null : "wind_direction_entity";
+    } else if (dc) {
+      k = NT_BY_CLASS[dc] || null;
+    } else if (NT_TREND_RE.test(e) && !NT_PRESS_RE.test(e)) {
+      k = "trend_entity";
     }
+    if (k && allowed.includes(k) && !out[k]) out[k] = e;
   }
-  const allowed = NT_FIELDS[config.module_type === "outdoor" ? "outdoor" : "indoor"];
-  for (const k of Object.keys(out)) if (!allowed.includes(k)) delete out[k];
+  return out;
+}
+
+// The keys still worth filling in, i.e. resolved but not already set.
+function ntAutofill(hass, config) {
+  const kind = NT_FIELDS[config.module_type] ? config.module_type : "indoor";
+  const out = ntResolve(hass, config.entity, kind);
+  for (const k of Object.keys(out)) if (config[k]) delete out[k];
   return out;
 }
 
 // The config keys the device behind `entity` can actually fill. null when no device is
 // resolvable, in which case the caller falls back to everything the module type allows.
-function ntDeviceFields(hass, entity) {
+function ntDeviceFields(hass, entity, kind) {
   if (!entity || !hass.states[entity]) return null;
-  const sibs = ntSiblings(hass, entity);
-  if (!sibs.length) return null;
-  const keys = new Set();
-  for (const e of sibs) {
-    const k = NT_BY_CLASS[hass.states[e].attributes.device_class];
-    if (k) keys.add(k);
-    else if (NT_TREND_RE.test(e) && !NT_PRESS_RE.test(e)) keys.add("trend_entity");
-  }
-  return keys;
+  if (!ntSiblings(hass, entity).length) return null;
+  return new Set(Object.keys(ntResolve(hass, entity, kind)));
 }
 
 class NetatmoCard extends HTMLElement {
@@ -206,7 +264,7 @@ class NetatmoCard extends HTMLElement {
     );
     const netatmo = temps.filter((e) => /netatmo/i.test(hass.states[e].attributes.attribution || ""));
     const entity = netatmo[0] || temps[0] || "";
-    const dev = entity ? ntDeviceFields(hass, entity) : null;
+    const dev = entity ? ntDeviceFields(hass, entity, "indoor") : null;
     const indoor = !dev || dev.has("co2_entity") || dev.has("pressure_entity") || dev.has("noise_entity");
     const type = indoor ? "indoor" : "outdoor";
     return { entity: entity, module_type: type, ...(entity ? ntAutofill(hass, { entity, module_type: type }) : {}) };
@@ -214,11 +272,12 @@ class NetatmoCard extends HTMLElement {
 
   setConfig(config) {
     if (!config || !config.entity) throw new Error("Please define an entity (temperature sensor)");
+    const kind = NT_FIELDS[config.module_type] ? config.module_type : "indoor";
     let dec = parseInt(config.decimals, 10);
-    if (!(dec >= 0 && dec <= 3)) dec = 1;
+    if (!(dec >= 0 && dec <= 3)) dec = NT_MAIN[kind].dec;
     this._config = {
       ...config,
-      module_type: config.module_type === "outdoor" ? "outdoor" : "indoor",
+      module_type: kind,
       decimals: dec,
       co2_good: parseFloat(config.co2_good) > 0 ? parseFloat(config.co2_good) : 1000,
       co2_bad: parseFloat(config.co2_bad) > 0 ? parseFloat(config.co2_bad) : 2000,
@@ -242,12 +301,157 @@ class NetatmoCard extends HTMLElement {
   }
 
   _kind() {
-    return this._config.module_type === "outdoor" ? "outdoor" : "indoor";
+    return NT_FIELDS[this._config.module_type] ? this._config.module_type : "indoor";
+  }
+
+  _moduleSvg() {
+    const k = this._kind();
+    return k === "rain" ? this._svgRain() : k === "wind" ? this._svgWind() : this._svgCylinder();
+  }
+
+  _glossStops() {
+    return NT_BODY.gloss
+      .map((c, i, a) => `<stop offset="${(i / (a.length - 1)).toFixed(3)}" stop-color="${c}"/>`)
+      .join("");
+  }
+
+  // Rain gauge: clear collector ring, glossy black funnel and body, white base.
+  _svgRain() {
+    const u = this._uid();
+    const CX = 62, BASE_BOT = 288;
+    const RXc = 39, RYc = 9.75;                // clear collector, 126 mm across
+    const RXb = 26.5, RYb = 6.5;               // black body, 68 % of the collector
+    const TOTAL = RXc * 2 * 1.07;
+    const TOP = BASE_BOT - TOTAL;
+    const rimCY = TOP + RYc;
+    const clearBot = TOP + TOTAL * 0.44;
+    const bodyTop = clearBot - 3, bodyBot = TOP + TOTAL * 0.92;
+    const funCY = clearBot - 2.5, funRX = RXc * 0.82, funRY = RYc * 0.82;
+
+    const clear = `M ${CX - RXc} ${rimCY} L ${CX - RXc} ${clearBot} A ${RXc} ${RYc} 0 0 0 ${CX + RXc} ${clearBot} L ${CX + RXc} ${rimCY} Z`;
+    const body = `M ${CX - RXb} ${bodyTop} L ${CX - RXb} ${bodyBot} A ${RXb} ${RYb} 0 0 0 ${CX + RXb} ${bodyBot} L ${CX + RXb} ${bodyTop} Z`;
+    const base = `M ${CX - RXb - 1} ${bodyBot} L ${CX - RXb - 1} ${BASE_BOT} A ${RXb + 1} ${RYb} 0 0 0 ${CX + RXb + 1} ${BASE_BOT} L ${CX + RXb + 1} ${bodyBot} A ${RXb + 1} ${RYb} 0 0 1 ${CX - RXb - 1} ${bodyBot} Z`;
+
+    return `
+      <svg viewBox="0 ${TOP - 8} 124 ${BASE_BOT + 14 - TOP + 8}" xmlns="http://www.w3.org/2000/svg" role="img">
+        <defs>
+          <linearGradient id="nt-gloss-${u}" x1="0" y1="0" x2="1" y2="0">${this._glossStops()}</linearGradient>
+          <linearGradient id="nt-glass-${u}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"/>
+            <stop offset="0.18" stop-color="#ffffff" stop-opacity="0.08"/>
+            <stop offset="0.72" stop-color="#ffffff" stop-opacity="0.10"/>
+            <stop offset="0.9" stop-color="#ffffff" stop-opacity="0.5"/>
+            <stop offset="1" stop-color="#ffffff" stop-opacity="0.2"/>
+          </linearGradient>
+          <linearGradient id="nt-funnel-${u}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#20242a"/>
+            <stop offset="0.35" stop-color="#3c434e"/>
+            <stop offset="0.6" stop-color="#2a2f37"/>
+            <stop offset="1" stop-color="#15181d"/>
+          </linearGradient>
+          <linearGradient id="nt-base-${u}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#d3d7da"/>
+            <stop offset="0.3" stop-color="#fbfcfc"/>
+            <stop offset="0.62" stop-color="#eef0f1"/>
+            <stop offset="1" stop-color="#cfd3d6"/>
+          </linearGradient>
+          <filter id="nt-blur-s-${u}" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="2.4"/>
+          </filter>
+        </defs>
+
+        <ellipse cx="${CX}" cy="${BASE_BOT + 5}" rx="${RXb + 8}" ry="4" fill="#000" opacity="0.16" filter="url(#nt-blur-s-${u})"/>
+
+        <path d="${clear}" fill="#dfe6ea" opacity="0.28"/>
+        <ellipse cx="${CX}" cy="${rimCY}" rx="${RXc}" ry="${RYc}" fill="#c9d4da" opacity="0.22"/>
+
+        <path d="${base}" fill="url(#nt-base-${u})"/>
+        <path d="${base}" fill="none" stroke="#000" stroke-opacity="0.14" stroke-width="0.7"/>
+        <path d="${body}" fill="url(#nt-gloss-${u})"/>
+        <path d="${body}" fill="none" stroke="#000" stroke-opacity="0.25" stroke-width="0.7"/>
+
+        <path d="M ${CX - funRX} ${funCY} A ${funRX} ${funRY} 0 0 0 ${CX + funRX} ${funCY} L ${CX + 2.5} ${funCY + 11} L ${CX - 2.5} ${funCY + 11} Z" fill="url(#nt-funnel-${u})"/>
+        <ellipse cx="${CX}" cy="${funCY}" rx="${funRX}" ry="${funRY}" fill="url(#nt-funnel-${u})"/>
+        <ellipse cx="${CX}" cy="${funCY}" rx="${funRX}" ry="${funRY}" fill="none" stroke="#7d858f" stroke-opacity="0.5" stroke-width="0.6"/>
+        <ellipse cx="${CX}" cy="${funCY + 3.6}" rx="${funRX * 0.16}" ry="${funRY * 0.22}" fill="#0d0f12"/>
+        <rect x="${CX - 0.55}" y="${funCY - 0.5}" width="1.1" height="4.6" rx="0.55" fill="#8b939d"/>
+
+        <path d="${clear}" fill="url(#nt-glass-${u})"/>
+        <path d="${clear}" fill="none" stroke="#ffffff" stroke-opacity="0.9" stroke-width="1.1"/>
+        <path d="${clear}" fill="none" stroke="#5c666e" stroke-opacity="0.45" stroke-width="0.5"/>
+        <ellipse cx="${CX}" cy="${rimCY}" rx="${RXc}" ry="${RYc}" fill="none" stroke="#ffffff" stroke-opacity="0.95" stroke-width="2"/>
+        <ellipse cx="${CX}" cy="${rimCY}" rx="${RXc}" ry="${RYc}" fill="none" stroke="#7c868e" stroke-opacity="0.5" stroke-width="0.6"/>
+        <ellipse cx="${CX}" cy="${rimCY + 2}" rx="${RXc - 2.6}" ry="${RYc - 1.6}" fill="none" stroke="#ffffff" stroke-opacity="0.5" stroke-width="0.9"/>
+      </svg>`;
+  }
+
+  // Anemometer: two glossy black discs held apart by four posts, white top and base.
+  _svgWind() {
+    const u = this._uid();
+    const CX = 62, BASE_BOT = 288, TOTAL = 95;
+    const RX = 33, RY = 8.25;
+    const TOP = BASE_BOT - TOTAL;
+    const upCY = TOP + RY;
+    const upBot = TOP + TOTAL * 0.458;
+    const lowCY = TOP + TOTAL * 0.551;
+    const lowBot = TOP + TOTAL * 0.916;
+
+    const disc = (top, bot) => `M ${CX - RX} ${top} L ${CX - RX} ${bot} A ${RX} ${RY} 0 0 0 ${CX + RX} ${bot} L ${CX + RX} ${top} Z`;
+    const base = `M ${CX - RX - 1} ${lowBot} L ${CX - RX - 1} ${BASE_BOT} A ${RX + 1} ${RY} 0 0 0 ${CX + RX + 1} ${BASE_BOT} L ${CX + RX + 1} ${lowBot} A ${RX + 1} ${RY} 0 0 1 ${CX - RX - 1} ${lowBot} Z`;
+
+    let posts = "";
+    for (const f of [-0.8, -0.35, 0.35, 0.8]) {
+      const x = CX + RX * f;
+      const w = 2.1 * (1 - Math.abs(f) * 0.25);
+      posts += `<rect x="${(x - w / 2).toFixed(2)}" y="${upBot - 1}" width="${w.toFixed(2)}" height="${(lowCY - upBot + 2).toFixed(1)}" rx="${(w / 2).toFixed(2)}" fill="#eef1f2" stroke="#000" stroke-opacity="0.12" stroke-width="0.35"/>`;
+    }
+
+    return `
+      <svg viewBox="0 ${TOP - 8} 124 ${BASE_BOT + 14 - TOP + 8}" xmlns="http://www.w3.org/2000/svg" role="img">
+        <defs>
+          <linearGradient id="nt-gloss-${u}" x1="0" y1="0" x2="1" y2="0">${this._glossStops()}</linearGradient>
+          <linearGradient id="nt-base-${u}" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#d3d7da"/>
+            <stop offset="0.3" stop-color="#fbfcfc"/>
+            <stop offset="0.62" stop-color="#eef0f1"/>
+            <stop offset="1" stop-color="#cfd3d6"/>
+          </linearGradient>
+          <radialGradient id="nt-top-${u}" cx="0.4" cy="0.3" r="0.8">
+            <stop offset="0" stop-color="#ffffff"/>
+            <stop offset="0.65" stop-color="#f6f8f8"/>
+            <stop offset="1" stop-color="#dde1e3"/>
+          </radialGradient>
+          <filter id="nt-blur-s-${u}" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="2.4"/>
+          </filter>
+        </defs>
+
+        <ellipse cx="${CX}" cy="${BASE_BOT + 5}" rx="${RX + 8}" ry="4" fill="#000" opacity="0.16" filter="url(#nt-blur-s-${u})"/>
+
+        <path d="${base}" fill="url(#nt-base-${u})"/>
+        <path d="${base}" fill="none" stroke="#000" stroke-opacity="0.14" stroke-width="0.7"/>
+
+        <path d="${disc(lowCY, lowBot)}" fill="url(#nt-gloss-${u})"/>
+        <ellipse cx="${CX}" cy="${lowCY}" rx="${RX}" ry="${RY}" fill="url(#nt-top-${u})"/>
+        <ellipse cx="${CX}" cy="${lowCY}" rx="${RX}" ry="${RY}" fill="none" stroke="#000" stroke-opacity="0.12" stroke-width="0.6"/>
+        <path d="${disc(lowCY, lowBot)}" fill="none" stroke="#000" stroke-opacity="0.25" stroke-width="0.7"/>
+        <ellipse cx="${CX}" cy="${lowCY - 1.5}" rx="8" ry="4" fill="#f2f5f6"/>
+        <path d="M ${CX - 8} ${lowCY - 1.5} A 8 4 0 0 1 ${CX + 8} ${lowCY - 1.5} L ${CX + 2} ${lowCY - 7} L ${CX - 2} ${lowCY - 7} Z" fill="#e6eaec"/>
+
+        ${posts}
+
+        <path d="${disc(upCY, upBot)}" fill="url(#nt-gloss-${u})"/>
+        <path d="${disc(upCY, upBot)}" fill="none" stroke="#000" stroke-opacity="0.25" stroke-width="0.7"/>
+        <ellipse cx="${CX}" cy="${upCY}" rx="${RX}" ry="${RY}" fill="url(#nt-top-${u})"/>
+        <ellipse cx="${CX}" cy="${upCY}" rx="${RX}" ry="${RY}" fill="none" stroke="#000" stroke-opacity="0.13" stroke-width="0.6"/>
+        <path d="M ${CX - RX + 5} ${upCY - 3} A ${RX - 5} ${RY - 2.6} 0 0 1 ${CX + 2} ${upCY - 4.6}" fill="none" stroke="#fff" stroke-opacity="0.9" stroke-width="1.3" stroke-linecap="round"/>
+        <ellipse cx="${CX}" cy="${upCY + RY * 0.52}" rx="1.6" ry="0.9" fill="#c4cacf"/>
+      </svg>`;
   }
 
   // Drawn from the Netatmo product shots: matte anodised cylinder, one long recessed
   // groove on the front, translucent white base ring, white top that lights up.
-  _moduleSvg() {
+  _svgCylinder() {
     const u = this._uid();
     const indoor = this._kind() === "indoor";
     const CX = 62, RX = 26, RY = 6.5;
@@ -362,7 +566,9 @@ class NetatmoCard extends HTMLElement {
         .nt-main { display: flex; align-items: baseline; gap: 3px; }
         .nt-value { font-size: 2.1em; font-weight: 700; color: var(--primary-text-color); line-height: 1.2; }
         .nt-unit { font-size: 1em; font-weight: 400; color: var(--secondary-text-color); }
-        .nt-trend { font-size: 0.95em; color: var(--secondary-text-color); margin-left: 2px; }
+        .nt-trend { font-size: 0.95em; color: var(--secondary-text-color); margin-left: 2px;
+          display: inline-flex; align-items: center; }
+        .nt-trend svg { display: block; }
         .nt-label { font-size: 0.85em; color: var(--secondary-text-color); }
         .nt-rows { display: grid; grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
           gap: 4px 8px; margin-top: 10px; }
@@ -503,10 +709,20 @@ class NetatmoCard extends HTMLElement {
       this._el["nt-unit"].textContent = st.attributes.unit_of_measurement || "";
     }
 
-    const tr = c.trend_entity && this._hass.states[c.trend_entity];
-    const trs = tr ? String(tr.state).toLowerCase() : "";
-    this._el["nt-trend"].textContent = trs === "up" ? "▲" : trs === "down" ? "▼" : "";
-    this._el["nt-trend"].title = tr ? (tr.attributes.friendly_name || c.trend_entity) + " : " + tr.state : "";
+    const slot = this._el["nt-trend"];
+    if (this._kind() === "wind") {
+      // The angle is where the wind comes from, so the arrow points the other way.
+      const a = this._num(c.wind_direction_entity);
+      slot.innerHTML = isNaN(a) ? "" :
+        `<svg width="15" height="15" viewBox="0 0 24 24" style="transform:rotate(${((a + 180) % 360).toFixed(0)}deg);">
+           <path d="M12 3 L18.5 20.5 L12 16.2 L5.5 20.5 Z" fill="currentColor"/></svg>`;
+      slot.title = isNaN(a) ? "" : t.windFrom + " " + Math.round(a) + "°";
+    } else {
+      const tr = c.trend_entity && this._hass.states[c.trend_entity];
+      const trs = tr ? String(tr.state).toLowerCase() : "";
+      slot.textContent = trs === "up" ? "▲" : trs === "down" ? "▼" : "";
+      slot.title = tr ? (tr.attributes.friendly_name || c.trend_entity) + " : " + tr.state : "";
+    }
 
     this._updateRows(t);
     this._updateGlow();
@@ -521,7 +737,10 @@ class NetatmoCard extends HTMLElement {
       const st = this._hass.states[c[m.cfg]];
       const n = st ? parseFloat(st.state) : NaN;
       const unit = st ? st.attributes.unit_of_measurement || "" : "";
-      this._el["nt-val-" + m.key].textContent = isNaN(n) ? "—" : ntFmt(n, m.dec, m.group) + (unit ? " " + unit : "");
+      const txt = m.key === "wind_dir" && !isNaN(n)
+        ? Math.round(n) + "° " + t.dirs[Math.round((((n % 360) + 360) % 360) / 45) % 8]
+        : ntFmt(n, m.dec, m.group) + (unit ? " " + unit : "");
+      this._el["nt-val-" + m.key].textContent = isNaN(n) ? "—" : txt;
       let color = "";
       let hint = "";
       if (m.key === "co2" && !isNaN(n)) {
@@ -663,8 +882,12 @@ class NetatmoCardEditor extends HTMLElement {
         if (v.label) out.label = v.label;
         // Switching module type drops the readings the other one does not have.
         for (const k of NT_FIELDS[kind]) if (v[k]) out[k] = v[k];
-        if (v.decimals != null && v.decimals !== "" && parseInt(v.decimals, 10) !== 1) out.decimals = parseInt(v.decimals, 10);
-        if (v.body_color && v.body_color !== "aluminium") out.body_color = v.body_color;
+        if (v.decimals != null && v.decimals !== "" && parseInt(v.decimals, 10) !== NT_MAIN[kind].dec) {
+          out.decimals = parseInt(v.decimals, 10);
+        }
+        if ((kind === "indoor" || kind === "outdoor") && v.body_color && v.body_color !== "aluminium") {
+          out.body_color = v.body_color;
+        }
         if (kind === "indoor") {
           if (v.show_glow === false) out.show_glow = false;
           if (v.co2_good != null && v.co2_good !== "" && parseFloat(v.co2_good) !== 1000) out.co2_good = parseFloat(v.co2_good);
@@ -685,7 +908,7 @@ class NetatmoCardEditor extends HTMLElement {
     this._form.hass = this._hass;
     const data = {
       entity: c.entity || "",
-      module_type: c.module_type === "outdoor" ? "outdoor" : "indoor",
+      module_type: NT_FIELDS[c.module_type] ? c.module_type : "indoor",
       name: c.name || "",
       label: c.label || "",
       humidity_entity: c.humidity_entity || "",
@@ -695,7 +918,8 @@ class NetatmoCardEditor extends HTMLElement {
       trend_entity: c.trend_entity || "",
       battery_entity: c.battery_entity || "",
       connectivity_entity: c.connectivity_entity || "",
-      decimals: c.decimals != null ? c.decimals : 1,
+      decimals: c.decimals != null ? c.decimals
+        : NT_MAIN[NT_FIELDS[c.module_type] ? c.module_type : "indoor"].dec,
       body_color: c.body_color || "aluminium",
       show_glow: c.show_glow !== false,
       accent_color: c.accent_color || "#2f8fd0",
@@ -707,32 +931,39 @@ class NetatmoCardEditor extends HTMLElement {
     };
     this._form.data = data;
     const kind = data.module_type;
-    const dev = ntDeviceFields(this._hass, c.entity);
+    const dev = ntDeviceFields(this._hass, c.entity, kind);
     // A field is offered when the module type has it AND the device exposes it
     // (or it is already set, so it stays clearable).
     const has = (k) => NT_FIELDS[kind].includes(k) && (!!c[k] || !dev || dev.has(k));
     const labels = { humidity_entity: t.humidity, co2_entity: t.co2, noise_entity: t.noise,
       pressure_entity: t.pressure, trend_entity: t.trend, battery_entity: t.battery,
-      connectivity_entity: t.connectivity };
+      connectivity_entity: t.connectivity, rain_hour_entity: t.rainHour,
+      rain_rate_entity: t.rainRate, gust_entity: t.gust, wind_direction_entity: t.windDir };
     // The 24 h chart can only plot a reading this card already shows.
-    const charted = [c.entity, c.humidity_entity, c.co2_entity, c.noise_entity, c.pressure_entity].filter(Boolean);
+    const charted = [c.entity].concat(NT_FIELDS[kind].map((k) => c[k])).filter(Boolean);
 
+    const mainLabel = kind === "rain" ? t.entRain : kind === "wind" ? t.entWind : t.entity;
     this._form.schema = [
-      { name: "entity", label: t.entity, selector: { entity: { domain: "sensor", device_class: "temperature" } } },
+      { name: "entity", label: mainLabel,
+        selector: { entity: { domain: "sensor", device_class: NT_MAIN[kind].device_class } } },
       { name: "module_type", label: t.modType, selector: { select: { mode: "dropdown", options: [
         { value: "indoor", label: t.mtIndoor },
         { value: "outdoor", label: t.mtOutdoor },
+        { value: "rain", label: t.mtRain },
+        { value: "wind", label: t.mtWind },
       ] } } },
       { name: "name", label: t.name, selector: { text: {} } },
       { name: "label", label: t.label, selector: { text: {} } },
       ...NT_FIELDS[kind].filter(has).map((k) => ({ name: k, label: labels[k], selector: NT_SELECTOR[k] })),
       { name: "decimals", label: t.decimals, selector: { number: { mode: "box", step: 1, min: 0, max: 3 } } },
-      { name: "body_color", label: t.body, selector: { select: { mode: "dropdown", options: [
-        { value: "aluminium", label: t.bodyAlu },
-        { value: "sand", label: t.bodySand },
-        { value: "mint", label: t.bodyMint },
-        { value: "graphite", label: t.bodyGraphite },
-      ] } } },
+      ...(kind === "indoor" || kind === "outdoor" ? [
+        { name: "body_color", label: t.body, selector: { select: { mode: "dropdown", options: [
+          { value: "aluminium", label: t.bodyAlu },
+          { value: "sand", label: t.bodySand },
+          { value: "mint", label: t.bodyMint },
+          { value: "graphite", label: t.bodyGraphite },
+        ] } } },
+      ] : []),
       ...(has("co2_entity") ? [
         { name: "show_glow", label: t.glow, selector: { boolean: {} } },
         { name: "co2_good", label: t.co2Good, selector: { number: { mode: "box", step: 50, min: 0 } } },

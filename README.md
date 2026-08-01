@@ -16,10 +16,11 @@
 
 Multilingual (6 languages: EN, FR, DE, ES, IT, NL — auto-detected from Home Assistant).
 
-A Lovelace card that draws the **indoor and outdoor weather modules** the way they look —
-matte anodised cylinder, recessed front groove, translucent base — with their readings
-alongside and the groove lighting up with air quality, like the real indoor station. Indoor
-and outdoor are drawn at their real relative sizes.
+A Lovelace card that draws the **weather station modules** the way they look, with their
+readings alongside. Four modules: the indoor station and the outdoor one as matte anodised
+cylinders with their recessed front groove, the rain gauge with its clear collector and black
+funnel, and the anemometer with its two glossy discs. The indoor groove lights up with air
+quality, like the real one.
 
 > 🇫🇷 [Lire en français](README.fr.md)
 
@@ -27,7 +28,9 @@ and outdoor are drawn at their real relative sizes.
 
 ## Features
 
-- **Two modules, one card**: the tall indoor station and the short outdoor module, at their real proportions. You pick `indoor` or `outdoor` and the drawing follows.
+- **Four modules, one card**: `indoor`, `outdoor`, `rain` and `wind`. You pick the type, the drawing and the fields follow. Indoor and outdoor share a diameter and differ in height, exactly like the real pair.
+- **Rain gauge**: daily rainfall in large type, with the previous hour and the rain since the last reading as tiles.
+- **Anemometer**: wind speed with a vane arrow pointing where the wind blows, gust speed and direction in degrees with a cardinal.
 - **The front groove lights up**, like the real indoor station: green / amber / red by CO₂. The outdoor module has no LED, so it never lights up. Thresholds are configurable; turn it off with `show_glow: false`.
 - **Fill in from the device**: pick the temperature sensor and the editor offers one button that fills in humidity, CO₂, noise, pressure, battery and connectivity from the same device.
 - **Only the relevant options**: the editor shows a field when the module type has that reading *and* the device exposes it — no battery field on a mains-powered indoor station, no CO₂ / noise / pressure on the outdoor module. Every picker is narrowed to the matching `device_class`.
@@ -38,6 +41,9 @@ and outdoor are drawn at their real relative sizes.
 - Native HA editor (entity pickers) + full YAML control.
 
 Works with any sensor, not only the Netatmo integration — a DIY or Zigbee temperature/humidity/CO₂ set renders just as well.
+
+The `wind` type is written against the entities the Netatmo integration exposes but has not been
+tested on real hardware, since I do not own the anemometer. Reports welcome.
 
 ## Installation (HACS)
 
@@ -68,18 +74,22 @@ label: Hallway
 | Option | Default | Description |
 |---|---|---|
 | `entity` | **required** | Temperature sensor — the card's main value |
-| `module_type` | `indoor` | `indoor` or `outdoor` — sets which module is drawn |
+| `module_type` | `indoor` | `indoor`, `outdoor`, `rain` or `wind` — sets which module is drawn |
 | `name` | friendly name | Title shown next to the module |
 | `label` | — | Subtitle under the value (e.g. the room) |
 | `humidity_entity` | — | Humidity, shown as a tile |
 | `co2_entity` | — | CO₂, colored by the thresholds below |
 | `noise_entity` | — | Noise level, colored above 55 / 70 dB |
 | `pressure_entity` | — | Atmospheric pressure |
+| `rain_hour_entity` | — | Rain in the previous hour (rain gauge) |
+| `rain_rate_entity` | — | Rain since the last reading (rain gauge) |
+| `gust_entity` | — | Gust speed (anemometer) |
+| `wind_direction_entity` | — | Wind direction, drives the vane arrow (anemometer) |
 | `trend_entity` | — | Temperature trend (`up` / `down`) → arrow next to the value |
 | `battery_entity` | — | Battery sensor shown top-right |
 | `connectivity_entity` | — | Connectivity sensor shown top-left |
 | `decimals` | `1` | Decimals for the temperature |
-| `body_color` | `aluminium` | `aluminium`, `sand`, `mint` or `graphite` |
+| `body_color` | `aluminium` | `aluminium`, `sand`, `mint` or `graphite` (indoor and outdoor only) |
 | `show_glow` | `true` | Light up the groove with air quality (indoor module only) |
 | `co2_good` | `1000` | Below this, the groove glows green (ppm) |
 | `co2_bad` | `2000` | Above this, the groove glows red (ppm) |
