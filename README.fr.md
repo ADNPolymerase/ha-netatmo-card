@@ -41,9 +41,9 @@ la qualité de l'air, comme sur le vrai.
 Fonctionne avec n'importe quel capteur, pas seulement l'intégration Netatmo — un ensemble
 température/humidité/CO₂ DIY ou Zigbee rend tout aussi bien.
 
-Le type `wind` est écrit d'après les entités exposées par l'intégration Netatmo, vérifiées dans son
-code source et sur une station publique, mais il n'a pas été testé sur un vrai anémomètre, je n'en
-ai pas. Deux choses à savoir : Netatmo active **la vitesse et la direction du vent** par défaut et
+Le type `wind` est écrit d'après les entités exposées par l'intégration Netatmo, vérifiées dans le code
+source de l'intégration sur le chemin qui sert les modules que vous possédez, mais il n'a pas été
+testé sur un vrai anémomètre, je n'en ai pas. Deux choses à savoir : Netatmo active **la vitesse et la direction du vent** par défaut et
 laisse **les rafales et l'angle numérique désactivés**, à activer sur la page de l'appareil si vous
 les voulez. Et la direction activée par défaut est une énumération de points cardinaux, pas des
 degrés. La card accepte les deux, affichant `215° SO` pour les degrés et `SO` pour les cardinaux, et
