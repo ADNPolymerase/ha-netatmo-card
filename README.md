@@ -14,8 +14,8 @@ Multilingual (6 languages: EN, FR, DE, ES, IT, NL — auto-detected from Home As
 
 A Lovelace card that draws the **indoor and outdoor weather modules** the way they look —
 matte anodised cylinder, recessed front groove, translucent base — with their readings
-alongside and the top lighting up with air quality. Indoor and outdoor are drawn at their
-real relative sizes.
+alongside and the groove lighting up with air quality, like the real module. Indoor and
+outdoor are drawn at their real relative sizes.
 
 > 🇫🇷 [Lire en français](README.fr.md)
 
@@ -24,7 +24,7 @@ real relative sizes.
 ## Features
 
 - **Two modules, one card**: the tall indoor station and the short outdoor module, at their real proportions. `module_type` is auto-detected from the entities you give it.
-- **The top lights up**, like the real module: green / amber / red by CO₂ indoors, by temperature outdoors. Thresholds are configurable; turn it off with `show_glow: false`.
+- **The front groove lights up**, like the real module: green / amber / red by CO₂ indoors, by temperature outdoors. Thresholds are configurable; turn it off with `show_glow: false`.
 - **Fill in from the device**: pick the temperature sensor and the editor offers one button that fills in humidity, CO₂, noise, pressure, battery and connectivity from the same device.
 - **Readings as tiles**: temperature in large type with its trend arrow, then humidity, CO₂, noise and pressure — each colored when it leaves the comfortable range, each opening its own more-info on tap.
 - **Battery and connectivity** in the card corners (colored level, wifi icon crossed out in red when offline).
@@ -74,7 +74,7 @@ label: Hallway
 | `connectivity_entity` | — | Connectivity sensor shown top-left |
 | `decimals` | `1` | Decimals for the temperature |
 | `body_color` | `aluminium` | `aluminium`, `sand`, `mint` or `graphite` |
-| `show_glow` | `true` | Light up the top of the module |
+| `show_glow` | `true` | Light up the front groove of the module |
 | `co2_good` | `1000` | Below this, the top glows green (ppm) |
 | `co2_bad` | `2000` | Above this, the top glows red (ppm) |
 | `accent_color` | `#2f8fd0` | Color of the 24 h curve |

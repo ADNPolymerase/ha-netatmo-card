@@ -15,7 +15,7 @@ const NT_T = {
     humidity: "Humidity entity", co2: "CO₂ entity", noise: "Noise entity", pressure: "Pressure entity",
     trend: "Temperature trend entity", battery: "Battery entity", connectivity: "Connectivity entity",
     body: "Module finish", bodyAlu: "Aluminium", bodySand: "Sand", bodyMint: "Mint", bodyGraphite: "Graphite",
-    glow: "Light up the top (air quality / temperature)", accent: "Accent color (hex)",
+    glow: "Light up the front groove (air quality / temperature)", accent: "Accent color (hex)",
     co2Good: "CO₂ threshold — good (ppm)", co2Bad: "CO₂ threshold — poor (ppm)",
     histOpt: "Show the 24 h history button", histEnt: "Charted entity (default: temperature)",
     hist: "Last 24 h", noData: "No data",
@@ -28,7 +28,7 @@ const NT_T = {
     humidity: "Entité humidité", co2: "Entité CO₂", noise: "Entité bruit", pressure: "Entité pression",
     trend: "Entité tendance de la température", battery: "Entité batterie", connectivity: "Entité connectivité",
     body: "Finition du module", bodyAlu: "Aluminium", bodySand: "Sable", bodyMint: "Menthe", bodyGraphite: "Graphite",
-    glow: "Allumer le dessus (qualité de l'air / température)", accent: "Couleur d'accent (hex)",
+    glow: "Allumer la fente (qualité de l'air / température)", accent: "Couleur d'accent (hex)",
     co2Good: "Seuil CO₂ — bon (ppm)", co2Bad: "Seuil CO₂ — mauvais (ppm)",
     histOpt: "Afficher le bouton tracé 24 h", histEnt: "Entité tracée (défaut : température)",
     hist: "Dernières 24 h", noData: "Aucune donnée",
@@ -41,7 +41,7 @@ const NT_T = {
     humidity: "Feuchtigkeits-Entität", co2: "CO₂-Entität", noise: "Lärm-Entität", pressure: "Luftdruck-Entität",
     trend: "Entität Temperaturtrend", battery: "Batterie-Entität", connectivity: "Konnektivitäts-Entität",
     body: "Oberfläche des Moduls", bodyAlu: "Aluminium", bodySand: "Sand", bodyMint: "Mint", bodyGraphite: "Graphit",
-    glow: "Oberseite leuchten lassen (Luftqualität / Temperatur)", accent: "Akzentfarbe (Hex)",
+    glow: "Frontschlitz leuchten lassen (Luftqualität / Temperatur)", accent: "Akzentfarbe (Hex)",
     co2Good: "CO₂-Schwelle — gut (ppm)", co2Bad: "CO₂-Schwelle — schlecht (ppm)",
     histOpt: "24-h-Verlauf-Button anzeigen", histEnt: "Dargestellte Entität (Standard: Temperatur)",
     hist: "Letzte 24 h", noData: "Keine Daten",
@@ -54,7 +54,7 @@ const NT_T = {
     humidity: "Entidad de humedad", co2: "Entidad de CO₂", noise: "Entidad de ruido", pressure: "Entidad de presión",
     trend: "Entidad de tendencia de temperatura", battery: "Entidad de batería", connectivity: "Entidad de conectividad",
     body: "Acabado del módulo", bodyAlu: "Aluminio", bodySand: "Arena", bodyMint: "Menta", bodyGraphite: "Grafito",
-    glow: "Iluminar la parte superior (calidad del aire / temperatura)", accent: "Color de acento (hex)",
+    glow: "Iluminar la ranura frontal (calidad del aire / temperatura)", accent: "Color de acento (hex)",
     co2Good: "Umbral CO₂ — bueno (ppm)", co2Bad: "Umbral CO₂ — malo (ppm)",
     histOpt: "Mostrar el botón de historial 24 h", histEnt: "Entidad del gráfico (por defecto: temperatura)",
     hist: "Últimas 24 h", noData: "Sin datos",
@@ -67,7 +67,7 @@ const NT_T = {
     humidity: "Entità umidità", co2: "Entità CO₂", noise: "Entità rumore", pressure: "Entità pressione",
     trend: "Entità tendenza della temperatura", battery: "Entità batteria", connectivity: "Entità connettività",
     body: "Finitura del modulo", bodyAlu: "Alluminio", bodySand: "Sabbia", bodyMint: "Menta", bodyGraphite: "Grafite",
-    glow: "Illumina la sommità (qualità dell'aria / temperatura)", accent: "Colore d'accento (hex)",
+    glow: "Illumina la fessura frontale (qualità dell'aria / temperatura)", accent: "Colore d'accento (hex)",
     co2Good: "Soglia CO₂ — buona (ppm)", co2Bad: "Soglia CO₂ — scarsa (ppm)",
     histOpt: "Mostra il pulsante storico 24 h", histEnt: "Entità nel grafico (predefinito: temperatura)",
     hist: "Ultime 24 h", noData: "Nessun dato",
@@ -80,7 +80,7 @@ const NT_T = {
     humidity: "Vochtigheids-entiteit", co2: "CO₂-entiteit", noise: "Geluids-entiteit", pressure: "Luchtdruk-entiteit",
     trend: "Entiteit temperatuurtrend", battery: "Batterij-entiteit", connectivity: "Connectiviteits-entiteit",
     body: "Afwerking van de module", bodyAlu: "Aluminium", bodySand: "Zand", bodyMint: "Mint", bodyGraphite: "Grafiet",
-    glow: "Bovenkant laten oplichten (luchtkwaliteit / temperatuur)", accent: "Accentkleur (hex)",
+    glow: "Voorste sleuf laten oplichten (luchtkwaliteit / temperatuur)", accent: "Accentkleur (hex)",
     co2Good: "CO₂-drempel — goed (ppm)", co2Bad: "CO₂-drempel — slecht (ppm)",
     histOpt: "Toon de 24 u-geschiedenisknop", histEnt: "Weergegeven entiteit (standaard: temperatuur)",
     hist: "Afgelopen 24 u", noData: "Geen gegevens",
@@ -220,6 +220,7 @@ class NetatmoCard extends HTMLElement {
     const slotY1 = TOP + H * (indoor ? 0.175 : 0.22);
     const slotY2 = TOP + H * (indoor ? 0.84 : 0.76);
     const slotX = CX + RX * 0.25, slotW = 4.2;               // sits right of centre: we see the front-right face
+    const slotH = slotY2 - slotY1;                           // the groove is the light guide — this is what lights up
 
     const pal = NT_BODY[this._config.body_color];
     const stops = pal
@@ -269,11 +270,6 @@ class NetatmoCard extends HTMLElement {
 
         <ellipse cx="${CX}" cy="${BASE_BOT + 6}" rx="${RX + 7}" ry="4.5" fill="#000" opacity="0.16" filter="url(#nt-blur-s-${u})"/>
 
-        <g class="nt-halo">
-          <ellipse cx="${CX}" cy="${TOP - 8}" rx="${RX * 0.62}" ry="6.5" filter="url(#nt-blur-${u})"/>
-          <ellipse cx="${CX}" cy="${TOP}" rx="${RX + 3}" ry="${RY + 3}" filter="url(#nt-blur-${u})"/>
-        </g>
-
         <path d="${base}" fill="url(#nt-base-${u})"/>
         <path d="${base}" fill="none" stroke="#000" stroke-opacity="0.14" stroke-width="0.7"/>
         ${indoor ? "" : `<rect x="${CX + 1}" y="${BASE_BOT - 1}" width="1.8" height="4" rx="0.9" fill="#e6e9ea" stroke="#000" stroke-opacity="0.18" stroke-width="0.5"/>`}
@@ -282,13 +278,18 @@ class NetatmoCard extends HTMLElement {
         <g clip-path="url(#nt-clip-${u})">
           <rect x="${CX - RX}" y="${FOOT - 26}" width="${RX * 2}" height="${26 + RY}" fill="url(#nt-foot-${u})"/>
         </g>
-        <rect x="${(slotX - slotW / 2 - 0.7).toFixed(2)}" y="${(slotY1 - 0.7).toFixed(1)}" width="${slotW + 1.4}" height="${(slotY2 - slotY1 + 1.4).toFixed(1)}" rx="${(slotW / 2 + 0.7).toFixed(2)}" fill="#000" opacity="0.1"/>
-        <rect x="${(slotX - slotW / 2).toFixed(2)}" y="${slotY1.toFixed(1)}" width="${slotW}" height="${(slotY2 - slotY1).toFixed(1)}" rx="${(slotW / 2).toFixed(2)}" fill="url(#nt-slot-${u})"/>
-        <rect x="${(slotX - slotW / 2).toFixed(2)}" y="${slotY1.toFixed(1)}" width="1.5" height="${(slotY2 - slotY1).toFixed(1)}" rx="0.75" fill="#000" opacity="0.34"/>
+        <rect x="${(slotX - slotW / 2 - 0.7).toFixed(2)}" y="${(slotY1 - 0.7).toFixed(1)}" width="${slotW + 1.4}" height="${(slotH + 1.4).toFixed(1)}" rx="${(slotW / 2 + 0.7).toFixed(2)}" fill="#000" opacity="0.1"/>
+        <rect x="${(slotX - slotW / 2).toFixed(2)}" y="${slotY1.toFixed(1)}" width="${slotW}" height="${slotH.toFixed(1)}" rx="${(slotW / 2).toFixed(2)}" fill="url(#nt-slot-${u})"/>
+        <rect x="${(slotX - slotW / 2).toFixed(2)}" y="${slotY1.toFixed(1)}" width="1.5" height="${slotH.toFixed(1)}" rx="0.75" fill="#000" opacity="0.34"/>
+
+        <g class="nt-halo">
+          <rect x="${(slotX - slotW / 2 - 3.5).toFixed(2)}" y="${(slotY1 - 3.5).toFixed(1)}" width="${slotW + 7}" height="${(slotH + 7).toFixed(1)}" rx="${(slotW / 2 + 3.5).toFixed(2)}" filter="url(#nt-blur-${u})"/>
+        </g>
+        <rect class="nt-lens" x="${(slotX - slotW / 2 + 0.45).toFixed(2)}" y="${(slotY1 + 0.45).toFixed(1)}" width="${slotW - 0.9}" height="${(slotH - 0.9).toFixed(1)}" rx="${(slotW / 2 - 0.45).toFixed(2)}"/>
+
         <path d="${body}" fill="none" stroke="#000" stroke-opacity="0.18" stroke-width="0.7"/>
 
         <ellipse cx="${CX}" cy="${TOP}" rx="${RX}" ry="${RY}" fill="url(#nt-cap-${u})"/>
-        <ellipse class="nt-lens" cx="${CX}" cy="${TOP}" rx="${RX - 3.4}" ry="${RY - 1}"/>
         <ellipse cx="${CX}" cy="${TOP}" rx="${RX - 3.4}" ry="${RY - 1}" fill="none" stroke="#000" stroke-opacity="0.09" stroke-width="0.6"/>
         <path d="M ${CX - RX} ${TOP} A ${RX} ${RY} 0 0 0 ${CX + RX} ${TOP}" fill="none" stroke="#000" stroke-opacity="0.13" stroke-width="0.7"/>
         <path d="M ${CX - RX + 5} ${TOP - 3} A ${RX - 5} ${RY - 2.6} 0 0 1 ${CX + 2} ${TOP - 4.6}" fill="none" stroke="#fff" stroke-opacity="0.85" stroke-width="1.3" stroke-linecap="round"/>
@@ -329,7 +330,7 @@ class NetatmoCard extends HTMLElement {
           color: var(--nt-row-color, var(--secondary-text-color)); }
         .nt-rv { font-size: 0.88em; color: var(--primary-text-color);
           overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .nt-halo ellipse { fill: var(--nt-glow, transparent); opacity: var(--nt-glow-op, 0); transition: opacity 0.6s; }
+        .nt-halo > * { fill: var(--nt-glow, transparent); opacity: var(--nt-glow-op, 0); transition: opacity 0.6s; }
         .nt-lens { fill: var(--nt-glow, transparent); opacity: var(--nt-lens-op, 0); transition: opacity 0.6s; }
         .nt-unavailable .nt-mod, .nt-unavailable .nt-value { opacity: 0.4; }
         .nt-hist-toggle { display: flex; align-items: center; justify-content: center; gap: 6px;
@@ -505,8 +506,8 @@ class NetatmoCard extends HTMLElement {
   _updateGlow() {
     const col = this._glowColor();
     this._card.style.setProperty("--nt-glow", col || "transparent");
-    this._card.style.setProperty("--nt-glow-op", col ? "0.3" : "0");
-    this._card.style.setProperty("--nt-lens-op", col ? "0.85" : "0");
+    this._card.style.setProperty("--nt-glow-op", col ? "0.55" : "0");
+    this._card.style.setProperty("--nt-lens-op", col ? "1" : "0");
   }
 
   _updateCorners() {
@@ -742,7 +743,7 @@ window.customCards = window.customCards || [];
 window.customCards.push({
   type: "netatmo-card",
   name: "Netatmo Card",
-  description: "The Netatmo indoor and outdoor weather modules drawn as they look, with their readings alongside and the top lighting up with air quality.",
+  description: "The Netatmo indoor and outdoor weather modules drawn as they look, with their readings alongside and the front groove lighting up with air quality.",
   preview: true,
   documentationURL: "https://github.com/ADNPolymerase/ha-netatmo-card",
 });

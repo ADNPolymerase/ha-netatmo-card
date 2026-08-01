@@ -14,15 +14,15 @@ Multilingue (6 langues : EN, FR, DE, ES, IT, NL — détectées depuis Home Assi
 
 Une card Lovelace qui dessine les **modules météo intérieur et extérieur** tels qu'ils sont —
 cylindre alu mat, rainure verticale en creux, socle translucide — avec les mesures à côté
-et le dessus qui s'allume selon la qualité de l'air. Intérieur et extérieur sont dessinés
-à leurs tailles relatives réelles.
+et la fente qui s'allume selon la qualité de l'air, comme sur le vrai module. Intérieur et
+extérieur sont dessinés à leurs tailles relatives réelles.
 
 ![Netatmo Card](https://raw.githubusercontent.com/ADNPolymerase/ha-netatmo-card/main/docs/screenshot.fr.png)
 
 ## Fonctionnalités
 
 - **Deux modules, une card** : la station intérieure haute et le module extérieur court, à leurs proportions réelles. `module_type` est déduit automatiquement des entités fournies.
-- **Le dessus s'allume**, comme sur le vrai module : vert / orange / rouge selon le CO₂ à l'intérieur, selon la température à l'extérieur. Seuils configurables, désactivable avec `show_glow: false`.
+- **La fente s'allume**, comme sur le vrai module : vert / orange / rouge selon le CO₂ à l'intérieur, selon la température à l'extérieur. Seuils configurables, désactivable avec `show_glow: false`.
 - **Compléter depuis l'appareil** : choisissez le capteur de température et l'éditeur propose un bouton qui remplit humidité, CO₂, bruit, pression, batterie et connectivité depuis le même appareil.
 - **Mesures en tuiles** : température en gros avec sa flèche de tendance, puis humidité, CO₂, bruit et pression — chacune colorée hors de la plage de confort, chacune ouvrant sa fiche au clic.
 - **Batterie et connectivité** dans les coins (niveau coloré, icône wifi barrée en rouge hors ligne).
@@ -73,7 +73,7 @@ label: Entrée
 | `connectivity_entity` | — | Capteur de connectivité affiché en haut à gauche |
 | `decimals` | `1` | Décimales de la température |
 | `body_color` | `aluminium` | `aluminium`, `sand`, `mint` ou `graphite` |
-| `show_glow` | `true` | Allumer le dessus du module |
+| `show_glow` | `true` | Allumer la fente du module |
 | `co2_good` | `1000` | En dessous, le dessus s'allume en vert (ppm) |
 | `co2_bad` | `2000` | Au-dessus, le dessus s'allume en rouge (ppm) |
 | `accent_color` | `#2f8fd0` | Couleur de la courbe 24 h |
