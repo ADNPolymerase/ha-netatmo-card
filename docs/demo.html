@@ -315,5 +315,29 @@ if (q.get("submodule")) {
   out.textContent = lines.join("\n\n");
 }
 </script>
+<script>
+// fillreport: MichelJ's case. Everything but the battery is already resolved, so the old
+// message only mentioned the battery and read as if the rest were missing.
+if (q.get("fillreport")) {
+  document.getElementById("wrap").style.display = "none";
+  const ed = document.createElement("netatmo-card-editor");
+  ed.hass = mkHass(states);
+  ed.setConfig({
+    type: "custom:netatmo-card", module_type: "indoor_extra",
+    entity: "sensor.maison_chambre_des_maitres_temperature",
+    humidity_entity: "sensor.maison_chambre_des_maitres_humidite",
+    co2_entity: "sensor.maison_chambre_des_maitres_dioxyde_de_carbone",
+    connectivity_entity: "binary_sensor.maison_chambre_des_maitres_connectivite",
+  });
+  document.body.appendChild(ed);
+  ed.querySelector("#nt-fill").click();
+  setTimeout(() => {
+    const box = ed.firstElementChild;
+    const pre = document.createElement("pre"); pre.id = "fr";
+    pre.textContent = box.innerText;
+    document.body.appendChild(pre);
+  }, 60);
+}
+</script>
 </body>
 </html>

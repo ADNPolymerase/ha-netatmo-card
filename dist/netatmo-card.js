@@ -25,7 +25,7 @@ const NT_T = {
     hist: "Last 24 h", noData: "No data",
     airGood: "Healthy air", airFair: "Stuffy air", airPoor: "Poor air",
     fillTitle: "Other sensors of this module were found.", fillBtn: "Fill in from the device",
-    filled: "Filled in: ", fillNone: "Nothing more to fill in." },
+    filled: "Filled in from the device:", fillNone: "Nothing more to fill in." },
   fr: { entity: "Capteur de température", name: "Nom", label: "Sous-titre", decimals: "Décimales", language: "Langue", auto: "Auto",
     unavailable: "Indisponible",
     modType: "Type de module", mtIndoor: "Station intérieure", mtIndoorExtra: "Module intérieur supplémentaire", mtOutdoor: "Extérieur", mtRain: "Pluviomètre", mtWind: "Anémomètre",
@@ -42,7 +42,7 @@ const NT_T = {
     hist: "Dernières 24 h", noData: "Aucune donnée",
     airGood: "Air sain", airFair: "Air confiné", airPoor: "Air vicié",
     fillTitle: "D'autres capteurs de ce module ont été trouvés.", fillBtn: "Compléter depuis l'appareil",
-    filled: "Complété : ", fillNone: "Rien de plus à compléter." },
+    filled: "Complété depuis l'appareil :", fillNone: "Rien de plus à compléter." },
   de: { entity: "Temperatursensor", name: "Name", label: "Untertitel", decimals: "Dezimalstellen", language: "Sprache", auto: "Auto",
     unavailable: "Nicht verfügbar",
     modType: "Modultyp", mtIndoor: "Innenstation", mtIndoorExtra: "Zusätzliches Innenmodul", mtOutdoor: "Außen", mtRain: "Regenmesser", mtWind: "Windmesser",
@@ -59,7 +59,7 @@ const NT_T = {
     hist: "Letzte 24 h", noData: "Keine Daten",
     airGood: "Gute Luft", airFair: "Verbrauchte Luft", airPoor: "Schlechte Luft",
     fillTitle: "Weitere Sensoren dieses Moduls gefunden.", fillBtn: "Aus dem Gerät übernehmen",
-    filled: "Übernommen: ", fillNone: "Nichts weiter zu übernehmen." },
+    filled: "Aus dem Gerät übernommen:", fillNone: "Nichts weiter zu übernehmen." },
   es: { entity: "Sensor de temperatura", name: "Nombre", label: "Subtítulo", decimals: "Decimales", language: "Idioma", auto: "Auto",
     unavailable: "No disponible",
     modType: "Tipo de módulo", mtIndoor: "Estación interior", mtIndoorExtra: "Módulo interior adicional", mtOutdoor: "Exterior", mtRain: "Pluviómetro", mtWind: "Anemómetro",
@@ -76,7 +76,7 @@ const NT_T = {
     hist: "Últimas 24 h", noData: "Sin datos",
     airGood: "Aire sano", airFair: "Aire cargado", airPoor: "Aire viciado",
     fillTitle: "Se han encontrado otros sensores de este módulo.", fillBtn: "Completar desde el dispositivo",
-    filled: "Completado: ", fillNone: "Nada más que completar." },
+    filled: "Completado desde el dispositivo:", fillNone: "Nada más que completar." },
   it: { entity: "Sensore di temperatura", name: "Nome", label: "Sottotitolo", decimals: "Decimali", language: "Lingua", auto: "Auto",
     unavailable: "Non disponibile",
     modType: "Tipo di modulo", mtIndoor: "Stazione interna", mtIndoorExtra: "Modulo interno aggiuntivo", mtOutdoor: "Esterno", mtRain: "Pluviometro", mtWind: "Anemometro",
@@ -93,7 +93,7 @@ const NT_T = {
     hist: "Ultime 24 h", noData: "Nessun dato",
     airGood: "Aria salubre", airFair: "Aria viziata", airPoor: "Aria pessima",
     fillTitle: "Trovati altri sensori di questo modulo.", fillBtn: "Completa dal dispositivo",
-    filled: "Completato: ", fillNone: "Nulla da completare." },
+    filled: "Completato dal dispositivo:", fillNone: "Nulla da completare." },
   nl: { entity: "Temperatuursensor", name: "Naam", label: "Ondertitel", decimals: "Decimalen", language: "Taal", auto: "Auto",
     unavailable: "Niet beschikbaar",
     modType: "Moduletype", mtIndoor: "Binnenstation", mtIndoorExtra: "Extra binnenmodule", mtOutdoor: "Buiten", mtRain: "Regenmeter", mtWind: "Windmeter",
@@ -110,7 +110,7 @@ const NT_T = {
     hist: "Afgelopen 24 u", noData: "Geen gegevens",
     airGood: "Gezonde lucht", airFair: "Bedompte lucht", airPoor: "Slechte lucht",
     fillTitle: "Andere sensoren van deze module gevonden.", fillBtn: "Aanvullen vanaf het apparaat",
-    filled: "Aangevuld: ", fillNone: "Niets meer aan te vullen." },
+    filled: "Aangevuld vanaf het apparaat:", fillNone: "Niets meer aan te vullen." },
 };
 
 function ntLangCode(hass, config) {
@@ -119,6 +119,10 @@ function ntLangCode(hass, config) {
   return NT_T[s] ? s : "en";
 }
 function ntT(hass, config) { return NT_T[ntLangCode(hass, config)]; }
+
+function ntEsc(v) {
+  return String(v).replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+}
 
 function ntFmt(n, decimals, group) {
   if (n == null || isNaN(n)) return "—";
@@ -193,6 +197,13 @@ const NT_SELECTOR = {
   gust_entity: { entity: { domain: "sensor", device_class: "wind_speed" } },
   wind_direction_entity: { entity: { domain: "sensor", device_class: ["wind_direction", "enum"] } },
 };
+
+function ntFieldLabels(t) {
+  return { humidity_entity: t.humidity, co2_entity: t.co2, noise_entity: t.noise,
+    pressure_entity: t.pressure, trend_entity: t.trend, battery_entity: t.battery,
+    connectivity_entity: t.connectivity, rain_hour_entity: t.rainHour,
+    rain_rate_entity: t.rainRate, gust_entity: t.gust, wind_direction_entity: t.windDir };
+}
 
 const NT_TREND_RE = /trend|tendance|tendenz|tendencia|tendenza/i;
 const NT_PRESS_RE = /pressure|pression|druck|presion|presión|pressione/i;
@@ -999,10 +1010,7 @@ class NetatmoCardEditor extends HTMLElement {
     // A field is offered when the module type has it AND the device exposes it
     // (or it is already set, so it stays clearable).
     const has = (k) => NT_FIELDS[kind].includes(k) && (!!c[k] || !dev || dev.has(k));
-    const labels = { humidity_entity: t.humidity, co2_entity: t.co2, noise_entity: t.noise,
-      pressure_entity: t.pressure, trend_entity: t.trend, battery_entity: t.battery,
-      connectivity_entity: t.connectivity, rain_hour_entity: t.rainHour,
-      rain_rate_entity: t.rainRate, gust_entity: t.gust, wind_direction_entity: t.windDir };
+    const labels = ntFieldLabels(t);
     // The 24 h chart can only plot a reading this card already shows.
     const charted = [c.entity].concat(NT_FIELDS[kind].map((k) => c[k])).filter(Boolean);
 
@@ -1057,7 +1065,13 @@ class NetatmoCardEditor extends HTMLElement {
     this._fillBox.hidden = false;
     let html = "";
     if (keys.length) html += `<div style="margin-bottom:8px;">🌡️ ${t.fillTitle}</div>`;
-    if (status) html += `<div style="margin-bottom:8px;color:var(--success-color, #0f9d58);">${status}</div>`;
+    if (status) {
+      html += `<div style="margin-bottom:4px;color:var(--success-color, #0f9d58);">${ntEsc(status.title)}</div>`;
+      if (status.lines.length) {
+        html += `<ul style="margin:0 0 8px;padding-left:18px;">` +
+          status.lines.map((l) => `<li>${ntEsc(l)}</li>`).join("") + `</ul>`;
+      }
+    }
     if (keys.length) {
       html += `<button id="nt-fill" style="cursor:pointer;padding:8px 14px;border:none;border-radius:6px;background:var(--primary-color);color:var(--text-primary-color, #fff);font:inherit;">${t.fillBtn}</button>`;
     }
@@ -1068,9 +1082,17 @@ class NetatmoCardEditor extends HTMLElement {
 
   _fill(t, found) {
     const keys = Object.keys(found);
-    if (!keys.length) { this._fillStatus = t.fillNone; this._renderFillBox(t); return; }
+    if (!keys.length) { this._fillStatus = { title: t.fillNone, lines: [] }; this._renderFillBox(t); return; }
     this._config = { ...this._config, ...found };
-    this._fillStatus = t.filled + keys.map((k) => found[k]).join(", ");
+    // List every reading that now comes from this device, not only the ones this click
+    // added: the others were resolved earlier and leaving them out reads like they are missing.
+    const c = this._config;
+    const kind = NT_FIELDS[c.module_type] ? c.module_type : "indoor";
+    const labels = ntFieldLabels(t);
+    const lines = NT_FIELDS[kind]
+      .filter((k) => c[k] && ntSameDevice(this._hass, c.entity, c[k]))
+      .map((k) => labels[k] + " : " + c[k]);
+    this._fillStatus = { title: t.filled, lines: lines };
     this._render();
     this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: this._config }, bubbles: true, composed: true }));
   }
