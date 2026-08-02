@@ -35,6 +35,7 @@ comme sur les vrais.
 - **Compléter depuis l'appareil** : choisissez le capteur de température et l'éditeur propose un bouton qui remplit humidité, CO₂, bruit, pression, batterie et connectivité depuis le même appareil.
 - **Uniquement les options pertinentes** : un champ n'apparaît que si le type de module possède cette mesure *et* que l'appareil expose l'entité — pas de batterie sur une station intérieure sur secteur, pas de CO₂ / bruit / pression sur le module extérieur. Chaque liste est filtrée sur le `device_class` correspondant.
 - **Mesures en tuiles** : température en gros avec sa flèche de tendance, puis humidité, CO₂, bruit et pression — chacune colorée hors de la plage de confort, chacune ouvrant sa fiche au clic.
+- **Température colorée** : activez `color_temperature` et la valeur passe en bleu à `temp_cold` ou en dessous, en rouge à `temp_hot` ou au-dessus, 15 et 30 par défaut, dans l'unité que remonte votre capteur.
 - **Batterie et connectivité** dans les coins (niveau coloré, icône wifi barrée en rouge hors ligne).
 - **Tracé 24 h dépliable** : `show_history` ajoute un bouton discret qui déplie la courbe 24 h de la température — ou de n'importe quel autre capteur via `history_entity`.
 - **Finitions** : aluminium, sable, menthe ou graphite.
@@ -100,6 +101,9 @@ label: Entrée
 | `show_glow` | `true` | Allumer la fente selon la qualité de l'air (les deux modules intérieurs) |
 | `co2_good` | `1000` | En dessous, la fente s'allume en vert (ppm) |
 | `co2_bad` | `2000` | Au-dessus, la fente s'allume en rouge (ppm) |
+| `color_temperature` | `false` | Colorer la température : bleu quand il fait froid, rouge quand il fait chaud (les trois cylindres seulement) |
+| `temp_cold` | `15` | À cette valeur ou en dessous, la température s'affiche en bleu, dans l'unité de l'entité |
+| `temp_hot` | `30` | À cette valeur ou au-dessus, la température s'affiche en rouge, dans l'unité de l'entité |
 | `clickable` | `true` | Ouvrir la fiche de l'entité au clic sur la card ou une tuile |
 | `accent_color` | `#2f8fd0` | Couleur de la courbe 24 h |
 | `show_history` | `false` | Ajoute le bouton de tracé 24 h dépliable |

@@ -20,6 +20,7 @@ const NT_T = {
     trend: "Temperature trend entity", battery: "Battery entity", connectivity: "Connectivity entity",
     body: "Module finish", bodyAlu: "Aluminium", bodySand: "Sand", bodyMint: "Mint", bodyGraphite: "Graphite",
     glow: "Light up the groove with air quality (indoor)", accent: "Accent color (hex)", clickOpt: "Open more-info when tapped",
+    colorTemp: "Colour the temperature by threshold", tempCold: "Blue below (°)", tempHot: "Red above (°)",
     co2Good: "CO₂ threshold — good (ppm)", co2Bad: "CO₂ threshold — poor (ppm)",
     histOpt: "Show the 24 h history button", histEnt: "Charted entity (default: temperature)",
     hist: "Last 24 h", noData: "No data",
@@ -37,6 +38,7 @@ const NT_T = {
     trend: "Entité tendance de la température", battery: "Entité batterie", connectivity: "Entité connectivité",
     body: "Finition du module", bodyAlu: "Aluminium", bodySand: "Sable", bodyMint: "Menthe", bodyGraphite: "Graphite",
     glow: "Allumer la fente selon la qualité de l'air (intérieur)", accent: "Couleur d'accent (hex)", clickOpt: "Ouvrir la fiche au clic",
+    colorTemp: "Colorer la température selon des seuils", tempCold: "Bleu en dessous de (°)", tempHot: "Rouge au-dessus de (°)",
     co2Good: "Seuil CO₂ — bon (ppm)", co2Bad: "Seuil CO₂ — mauvais (ppm)",
     histOpt: "Afficher le bouton tracé 24 h", histEnt: "Entité tracée (défaut : température)",
     hist: "Dernières 24 h", noData: "Aucune donnée",
@@ -54,6 +56,7 @@ const NT_T = {
     trend: "Entität Temperaturtrend", battery: "Batterie-Entität", connectivity: "Konnektivitäts-Entität",
     body: "Oberfläche des Moduls", bodyAlu: "Aluminium", bodySand: "Sand", bodyMint: "Mint", bodyGraphite: "Graphit",
     glow: "Schlitz nach Luftqualität leuchten lassen (innen)", accent: "Akzentfarbe (Hex)", clickOpt: "Beim Tippen die Detailansicht öffnen",
+    colorTemp: "Temperatur nach Schwellen einfärben", tempCold: "Blau unter (°)", tempHot: "Rot über (°)",
     co2Good: "CO₂-Schwelle — gut (ppm)", co2Bad: "CO₂-Schwelle — schlecht (ppm)",
     histOpt: "24-h-Verlauf-Button anzeigen", histEnt: "Dargestellte Entität (Standard: Temperatur)",
     hist: "Letzte 24 h", noData: "Keine Daten",
@@ -71,6 +74,7 @@ const NT_T = {
     trend: "Entidad de tendencia de temperatura", battery: "Entidad de batería", connectivity: "Entidad de conectividad",
     body: "Acabado del módulo", bodyAlu: "Aluminio", bodySand: "Arena", bodyMint: "Menta", bodyGraphite: "Grafito",
     glow: "Iluminar la ranura según la calidad del aire (interior)", accent: "Color de acento (hex)", clickOpt: "Abrir la ficha al tocar",
+    colorTemp: "Colorear la temperatura por umbrales", tempCold: "Azul por debajo de (°)", tempHot: "Rojo por encima de (°)",
     co2Good: "Umbral CO₂ — bueno (ppm)", co2Bad: "Umbral CO₂ — malo (ppm)",
     histOpt: "Mostrar el botón de historial 24 h", histEnt: "Entidad del gráfico (por defecto: temperatura)",
     hist: "Últimas 24 h", noData: "Sin datos",
@@ -88,6 +92,7 @@ const NT_T = {
     trend: "Entità tendenza della temperatura", battery: "Entità batteria", connectivity: "Entità connettività",
     body: "Finitura del modulo", bodyAlu: "Alluminio", bodySand: "Sabbia", bodyMint: "Menta", bodyGraphite: "Grafite",
     glow: "Illumina la fessura secondo la qualità dell'aria (interno)", accent: "Colore d'accento (hex)", clickOpt: "Apri la scheda al tocco",
+    colorTemp: "Colora la temperatura per soglie", tempCold: "Blu sotto (°)", tempHot: "Rosso sopra (°)",
     co2Good: "Soglia CO₂ — buona (ppm)", co2Bad: "Soglia CO₂ — scarsa (ppm)",
     histOpt: "Mostra il pulsante storico 24 h", histEnt: "Entità nel grafico (predefinito: temperatura)",
     hist: "Ultime 24 h", noData: "Nessun dato",
@@ -105,6 +110,7 @@ const NT_T = {
     trend: "Entiteit temperatuurtrend", battery: "Batterij-entiteit", connectivity: "Connectiviteits-entiteit",
     body: "Afwerking van de module", bodyAlu: "Aluminium", bodySand: "Zand", bodyMint: "Mint", bodyGraphite: "Grafiet",
     glow: "Sleuf laten oplichten op luchtkwaliteit (binnen)", accent: "Accentkleur (hex)", clickOpt: "Meer-info openen bij tikken",
+    colorTemp: "Temperatuur kleuren op drempels", tempCold: "Blauw onder (°)", tempHot: "Rood boven (°)",
     co2Good: "CO₂-drempel — goed (ppm)", co2Bad: "CO₂-drempel — slecht (ppm)",
     histOpt: "Toon de 24 u-geschiedenisknop", histEnt: "Weergegeven entiteit (standaard: temperatuur)",
     hist: "Afgelopen 24 u", noData: "Geen gegevens",
@@ -323,6 +329,8 @@ class NetatmoCard extends HTMLElement {
       ...config,
       module_type: kind,
       decimals: dec,
+      temp_cold: config.temp_cold != null && config.temp_cold !== "" ? parseFloat(config.temp_cold) : 15,
+      temp_hot: config.temp_hot != null && config.temp_hot !== "" ? parseFloat(config.temp_hot) : 30,
       co2_good: parseFloat(config.co2_good) > 0 ? parseFloat(config.co2_good) : 1000,
       co2_bad: parseFloat(config.co2_bad) > 0 ? parseFloat(config.co2_bad) : 2000,
       body_color: NT_BODY[config.body_color] ? config.body_color : "aluminium",
@@ -722,6 +730,17 @@ class NetatmoCard extends HTMLElement {
     return isNaN(n) ? NaN : n;
   }
 
+  // Cold blue below temp_cold, hot red above temp_hot, ordinary text in between. Thresholds
+  // are in the entity's own unit, so it works in °F too.
+  _valueColor(value) {
+    const c = this._config;
+    if (c.color_temperature !== true) return "";
+    if (NT_MAIN[this._kind()].device_class !== "temperature") return "";
+    if (value <= c.temp_cold) return "#3d84e0";
+    if (value >= c.temp_hot) return "#e0503a";
+    return "";
+  }
+
   // Only the indoor station has a light guide behind the groove — the outdoor module has no LED.
   _glowColor() {
     const c = this._config;
@@ -753,11 +772,13 @@ class NetatmoCard extends HTMLElement {
       wrap.classList.add("nt-unavailable");
       this._el["nt-value"].textContent = "—";
       this._el["nt-unit"].textContent = "";
+      this._el["nt-value"].style.color = "";
       if (!c.label) this._el["nt-label"].textContent = t.unavailable;
     } else {
       wrap.classList.remove("nt-unavailable");
       this._el["nt-value"].textContent = ntFmt(value, c.decimals);
       this._el["nt-unit"].textContent = st.attributes.unit_of_measurement || "";
+      this._el["nt-value"].style.color = this._valueColor(value);
     }
 
     const slot = this._el["nt-trend"];
@@ -967,6 +988,11 @@ class NetatmoCardEditor extends HTMLElement {
           if (v.co2_bad != null && v.co2_bad !== "" && parseFloat(v.co2_bad) !== 2000) out.co2_bad = parseFloat(v.co2_bad);
         }
         if (v.clickable === false) out.clickable = false;
+        if (NT_MAIN[kind].device_class === "temperature" && v.color_temperature === true) {
+          out.color_temperature = true;
+          if (v.temp_cold != null && v.temp_cold !== "" && parseFloat(v.temp_cold) !== 15) out.temp_cold = parseFloat(v.temp_cold);
+          if (v.temp_hot != null && v.temp_hot !== "" && parseFloat(v.temp_hot) !== 30) out.temp_hot = parseFloat(v.temp_hot);
+        }
         if (v.accent_color && v.accent_color !== "#2f8fd0") out.accent_color = v.accent_color;
         if (v.show_history) out.show_history = true;
         if (v.history_entity) out.history_entity = v.history_entity;
@@ -998,6 +1024,9 @@ class NetatmoCardEditor extends HTMLElement {
       show_glow: c.show_glow !== false,
       accent_color: c.accent_color || "#2f8fd0",
       clickable: c.clickable !== false,
+      color_temperature: c.color_temperature === true,
+      temp_cold: c.temp_cold != null ? c.temp_cold : 15,
+      temp_hot: c.temp_hot != null ? c.temp_hot : 30,
       co2_good: c.co2_good != null ? c.co2_good : 1000,
       co2_bad: c.co2_bad != null ? c.co2_bad : 2000,
       show_history: c.show_history === true,
@@ -1042,6 +1071,12 @@ class NetatmoCardEditor extends HTMLElement {
         { name: "co2_good", label: t.co2Good, selector: { number: { mode: "box", step: 50, min: 0 } } },
         { name: "co2_bad", label: t.co2Bad, selector: { number: { mode: "box", step: 50, min: 0 } } },
       ] : []),
+      ...(NT_MAIN[kind].device_class === "temperature" ? [
+        { name: "color_temperature", label: t.colorTemp, selector: { boolean: {} } },
+      ].concat(c.color_temperature === true ? [
+        { name: "temp_cold", label: t.tempCold, selector: { number: { mode: "box", step: "any" } } },
+        { name: "temp_hot", label: t.tempHot, selector: { number: { mode: "box", step: "any" } } },
+      ] : []) : []),
       { name: "clickable", label: t.clickOpt, selector: { boolean: {} } },
       { name: "accent_color", label: t.accent, selector: { text: {} } },
       { name: "show_history", label: t.histOpt, selector: { boolean: {} } },
