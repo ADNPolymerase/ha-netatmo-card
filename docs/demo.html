@@ -131,6 +131,7 @@ const states = {};
     options: ["n", "ne", "e", "se", "s", "sw", "w", "nw"] }),
  st("sensor.anemometre_batterie", 54, { unit_of_measurement: "%", device_class: "battery" }),
  st("binary_sensor.anemometre_connectivite", "on", { device_class: "connectivity" }),
+ st("weather.maison", "partlycloudy", { friendly_name: lang === "fr" ? "Météo" : "Weather" }),
 ].forEach((s) => (states[s.entity_id] = s));
 
 // A station plus an additional indoor module, to check that pointing the card at the
@@ -187,6 +188,7 @@ c2.setConfig({
   humidity_entity: "sensor.capteur_exterieur_humidite",
   battery_entity: "sensor.capteur_exterieur_batterie",
   connectivity_entity: "binary_sensor.capteur_exterieur_connectivite",
+  weather_entity: "weather.maison",
   label: lang === "fr" ? "Jardin" : "Garden",
 });
 c2.hass = mkHass(states);
