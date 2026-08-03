@@ -20,6 +20,8 @@ const NT_T = {
     trend: "Temperature trend entity", battery: "Battery entity", connectivity: "Connectivity entity",
     body: "Module finish", bodyAlu: "Aluminium", bodySand: "Sand", bodyMint: "Mint", bodyGraphite: "Graphite",
     glow: "Light up the groove with air quality (indoor)", accent: "Accent color (hex)", clickOpt: "Open more-info when tapped",
+    weatherEnt: "Weather entity (current conditions)", weatherIcons: "Weather icon style",
+    wiDrawn: "Drawn", wiMdi: "Material icons", showModule: "Show the module drawing",
     colorTemp: "Colour the temperature by threshold", tempCold: "Blue below (°)", tempHot: "Red above (°)",
     co2Good: "CO₂ threshold — good (ppm)", co2Bad: "CO₂ threshold — poor (ppm)",
     histOpt: "Show the 24 h history button", histEnt: "Charted entity (default: temperature)",
@@ -38,6 +40,8 @@ const NT_T = {
     trend: "Entité tendance de la température", battery: "Entité batterie", connectivity: "Entité connectivité",
     body: "Finition du module", bodyAlu: "Aluminium", bodySand: "Sable", bodyMint: "Menthe", bodyGraphite: "Graphite",
     glow: "Allumer la fente selon la qualité de l'air (intérieur)", accent: "Couleur d'accent (hex)", clickOpt: "Ouvrir la fiche au clic",
+    weatherEnt: "Entité météo (temps actuel)", weatherIcons: "Style des icônes météo",
+    wiDrawn: "Dessinées", wiMdi: "Icônes Material", showModule: "Afficher le dessin du module",
     colorTemp: "Colorer la température selon des seuils", tempCold: "Bleu en dessous de (°)", tempHot: "Rouge au-dessus de (°)",
     co2Good: "Seuil CO₂ — bon (ppm)", co2Bad: "Seuil CO₂ — mauvais (ppm)",
     histOpt: "Afficher le bouton tracé 24 h", histEnt: "Entité tracée (défaut : température)",
@@ -56,6 +60,8 @@ const NT_T = {
     trend: "Entität Temperaturtrend", battery: "Batterie-Entität", connectivity: "Konnektivitäts-Entität",
     body: "Oberfläche des Moduls", bodyAlu: "Aluminium", bodySand: "Sand", bodyMint: "Mint", bodyGraphite: "Graphit",
     glow: "Schlitz nach Luftqualität leuchten lassen (innen)", accent: "Akzentfarbe (Hex)", clickOpt: "Beim Tippen die Detailansicht öffnen",
+    weatherEnt: "Wetter-Entität (aktuelles Wetter)", weatherIcons: "Stil der Wettersymbole",
+    wiDrawn: "Gezeichnet", wiMdi: "Material-Symbole", showModule: "Modulzeichnung anzeigen",
     colorTemp: "Temperatur nach Schwellen einfärben", tempCold: "Blau unter (°)", tempHot: "Rot über (°)",
     co2Good: "CO₂-Schwelle — gut (ppm)", co2Bad: "CO₂-Schwelle — schlecht (ppm)",
     histOpt: "24-h-Verlauf-Button anzeigen", histEnt: "Dargestellte Entität (Standard: Temperatur)",
@@ -74,6 +80,8 @@ const NT_T = {
     trend: "Entidad de tendencia de temperatura", battery: "Entidad de batería", connectivity: "Entidad de conectividad",
     body: "Acabado del módulo", bodyAlu: "Aluminio", bodySand: "Arena", bodyMint: "Menta", bodyGraphite: "Grafito",
     glow: "Iluminar la ranura según la calidad del aire (interior)", accent: "Color de acento (hex)", clickOpt: "Abrir la ficha al tocar",
+    weatherEnt: "Entidad meteorológica (tiempo actual)", weatherIcons: "Estilo de los iconos del tiempo",
+    wiDrawn: "Dibujados", wiMdi: "Iconos Material", showModule: "Mostrar el dibujo del módulo",
     colorTemp: "Colorear la temperatura por umbrales", tempCold: "Azul por debajo de (°)", tempHot: "Rojo por encima de (°)",
     co2Good: "Umbral CO₂ — bueno (ppm)", co2Bad: "Umbral CO₂ — malo (ppm)",
     histOpt: "Mostrar el botón de historial 24 h", histEnt: "Entidad del gráfico (por defecto: temperatura)",
@@ -92,6 +100,8 @@ const NT_T = {
     trend: "Entità tendenza della temperatura", battery: "Entità batteria", connectivity: "Entità connettività",
     body: "Finitura del modulo", bodyAlu: "Alluminio", bodySand: "Sabbia", bodyMint: "Menta", bodyGraphite: "Grafite",
     glow: "Illumina la fessura secondo la qualità dell'aria (interno)", accent: "Colore d'accento (hex)", clickOpt: "Apri la scheda al tocco",
+    weatherEnt: "Entità meteo (tempo attuale)", weatherIcons: "Stile delle icone meteo",
+    wiDrawn: "Disegnate", wiMdi: "Icone Material", showModule: "Mostra il disegno del modulo",
     colorTemp: "Colora la temperatura per soglie", tempCold: "Blu sotto (°)", tempHot: "Rosso sopra (°)",
     co2Good: "Soglia CO₂ — buona (ppm)", co2Bad: "Soglia CO₂ — scarsa (ppm)",
     histOpt: "Mostra il pulsante storico 24 h", histEnt: "Entità nel grafico (predefinito: temperatura)",
@@ -110,6 +120,8 @@ const NT_T = {
     trend: "Entiteit temperatuurtrend", battery: "Batterij-entiteit", connectivity: "Connectiviteits-entiteit",
     body: "Afwerking van de module", bodyAlu: "Aluminium", bodySand: "Zand", bodyMint: "Mint", bodyGraphite: "Grafiet",
     glow: "Sleuf laten oplichten op luchtkwaliteit (binnen)", accent: "Accentkleur (hex)", clickOpt: "Meer-info openen bij tikken",
+    weatherEnt: "Weer-entiteit (huidig weer)", weatherIcons: "Stijl van de weerpictogrammen",
+    wiDrawn: "Getekend", wiMdi: "Material-pictogrammen", showModule: "Moduletekening tonen",
     colorTemp: "Temperatuur kleuren op drempels", tempCold: "Blauw onder (°)", tempHot: "Rood boven (°)",
     co2Good: "CO₂-drempel — goed (ppm)", co2Bad: "CO₂-drempel — slecht (ppm)",
     histOpt: "Toon de 24 u-geschiedenisknop", histEnt: "Weergegeven entiteit (standaard: temperatuur)",
@@ -303,6 +315,104 @@ function ntDeviceFields(hass, entity, kind) {
   if (!entity || !hass.states[entity]) return null;
   if (!ntSiblings(hass, entity).length) return null;
   return new Set(Object.keys(ntResolve(hass, entity, kind)));
+}
+
+// ---------------------------------------------------------------------------
+// Weather icons, drawn here so the card needs nothing installed alongside it.
+// Home Assistant's own weather integrations already give the condition state.
+// ---------------------------------------------------------------------------
+const NT_WEATHER_MDI = {
+  "clear-night": "mdi:weather-night", cloudy: "mdi:weather-cloudy",
+  exceptional: "mdi:alert-circle-outline", fog: "mdi:weather-fog",
+  hail: "mdi:weather-hail", lightning: "mdi:weather-lightning",
+  "lightning-rainy": "mdi:weather-lightning-rainy", partlycloudy: "mdi:weather-partly-cloudy",
+  pouring: "mdi:weather-pouring", rainy: "mdi:weather-rainy",
+  snowy: "mdi:weather-snowy", "snowy-rainy": "mdi:weather-snowy-rainy",
+  sunny: "mdi:weather-sunny", windy: "mdi:weather-windy",
+  "windy-variant": "mdi:weather-windy-variant",
+};
+
+const NT_WP = {
+  sun(cx, cy, r) {
+    let out = "";
+    for (let a = 0; a < 360; a += 45) {
+      const t = (a * Math.PI) / 180, r1 = r + 3.4, r2 = r + 8.2;
+      out += `<line x1="${(cx + r1 * Math.cos(t)).toFixed(1)}" y1="${(cy + r1 * Math.sin(t)).toFixed(1)}"` +
+        ` x2="${(cx + r2 * Math.cos(t)).toFixed(1)}" y2="${(cy + r2 * Math.sin(t)).toFixed(1)}"` +
+        ` stroke="#f5b62c" stroke-width="3.2" stroke-linecap="round"/>`;
+    }
+    return out + `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#fbc72d"/>` +
+      `<circle cx="${cx - r * 0.3}" cy="${cy - r * 0.3}" r="${r * 0.55}" fill="#fdd85e"/>`;
+  },
+  // Bitten out with a mask: two arcs sharing endpoints are far too easy to get wrong.
+  moon(cx, cy, r, uid) {
+    return `<defs><mask id="nt-moon-${uid}">
+        <rect x="0" y="0" width="64" height="64" fill="#ffffff"/>
+        <circle cx="${cx + r * 0.62}" cy="${cy - r * 0.46}" r="${r * 0.94}" fill="#000000"/>
+      </mask></defs>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="#f3d264" mask="url(#nt-moon-${uid})"/>`;
+  },
+  cloud(x, y, s) {
+    return `<g transform="translate(${x} ${y}) scale(${s})">
+      <circle cx="15" cy="14" r="10" fill="#c3d3e0"/><circle cx="28" cy="10" r="12.5" fill="#c3d3e0"/>
+      <circle cx="40" cy="16" r="9" fill="#c3d3e0"/><rect x="6" y="16" width="42" height="10" rx="5" fill="#c3d3e0"/>
+      <circle cx="15" cy="12.5" r="9" fill="#eef4f9"/><circle cx="28" cy="8.5" r="11.5" fill="#eef4f9"/>
+      <circle cx="39" cy="14.5" r="8" fill="#eef4f9"/><rect x="7" y="14" width="39" height="9" rx="4.5" fill="#eef4f9"/>
+    </g>`;
+  },
+  drops(xs, y, len) {
+    return xs.map((x) => `<line x1="${x}" y1="${y}" x2="${x - 2.5}" y2="${y + len}"` +
+      ` stroke="#4a9fe0" stroke-width="3.4" stroke-linecap="round"/>`).join("");
+  },
+  flakes(xs, y) {
+    return xs.map((x) => `<g transform="translate(${x} ${y})" stroke="#8fc9ee" stroke-width="2.4" stroke-linecap="round">
+      <line x1="-3.4" y1="0" x2="3.4" y2="0"/><line x1="-1.7" y1="-2.9" x2="1.7" y2="2.9"/>
+      <line x1="1.7" y1="-2.9" x2="-1.7" y2="2.9"/></g>`).join("");
+  },
+  hail(xs, y) {
+    return xs.map((x) => `<circle cx="${x}" cy="${y + 3}" r="3" fill="#a8d4f0" stroke="#6fb0dc" stroke-width="1.2"/>`).join("");
+  },
+  bolt(x, y) {
+    return `<path d="M ${x} ${y} L ${x - 7} ${y + 13} L ${x - 1} ${y + 13} L ${x - 4} ${y + 24}` +
+      ` L ${x + 8} ${y + 9} L ${x + 1} ${y + 9} L ${x + 5} ${y} Z" fill="#f7b733" stroke="#e09a1c" stroke-width="1"/>`;
+  },
+  fog(y) {
+    return [0, 1, 2].map((i) => `<line x1="${11 + (i % 2) * 4}" y1="${y + i * 7}" x2="${53 - (i % 2) * 4}" y2="${y + i * 7}"` +
+      ` stroke="#c2ced7" stroke-width="3.6" stroke-linecap="round"/>`).join("");
+  },
+  wind(y) {
+    return `<g fill="none" stroke="#9fb3c2" stroke-width="3.4" stroke-linecap="round">
+      <path d="M 10 ${y} h 22 a 5 5 0 1 0 -5 -5"/>
+      <path d="M 12 ${y + 10} h 30 a 5.5 5.5 0 1 1 -5.5 5.5"/></g>`;
+  },
+};
+
+function ntWeatherSvg(cond, uid) {
+  const P = NT_WP;
+  let g;
+  switch (cond) {
+    case "sunny": g = P.sun(32, 32, 12); break;
+    case "clear-night": g = P.moon(32, 32, 15, uid); break;
+    case "partlycloudy": g = P.sun(23, 21, 9) + P.cloud(12, 24, 0.86); break;
+    case "cloudy": g = P.cloud(6, 18, 1.02); break;
+    case "rainy": g = P.cloud(8, 10, 0.94) + P.drops([22, 32, 42], 44, 10); break;
+    case "pouring": g = P.cloud(8, 8, 0.94) + P.drops([19, 28, 37, 46], 42, 14); break;
+    case "snowy": g = P.cloud(8, 10, 0.94) + P.flakes([22, 32, 42], 48); break;
+    case "snowy-rainy": g = P.cloud(8, 10, 0.94) + P.drops([23], 44, 10) + P.flakes([41], 48); break;
+    case "hail": g = P.cloud(8, 10, 0.94) + P.hail([22, 32, 42], 45); break;
+    case "lightning": g = P.cloud(8, 8, 0.94) + P.bolt(32, 38); break;
+    case "lightning-rainy": g = P.cloud(8, 6, 0.94) + P.bolt(36, 34) + P.drops([20], 42, 12); break;
+    case "fog": g = P.cloud(8, 4, 0.86) + P.fog(38); break;
+    case "windy": g = P.wind(26); break;
+    case "windy-variant": g = P.cloud(8, 6, 0.86) + P.wind(40); break;
+    case "exceptional":
+      g = `<circle cx="32" cy="32" r="16" fill="#f7b733"/>
+           <rect x="29.6" y="21" width="4.8" height="15" rx="2.4" fill="#fff"/>
+           <circle cx="32" cy="41" r="2.8" fill="#fff"/>`;
+      break;
+    default: return "";
+  }
+  return `<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:auto;">${g}</svg>`;
 }
 
 class NetatmoCard extends HTMLElement {
@@ -635,6 +745,10 @@ class NetatmoCard extends HTMLElement {
           color: var(--nt-row-color, var(--secondary-text-color)); }
         .nt-rv { font-size: 0.88em; line-height: 18px; color: var(--primary-text-color);
           overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .nt-weather { flex: none; width: 50px; display: flex; align-items: center; justify-content: center; }
+        .nt-weather[hidden] { display: none !important; }
+        .nt-weather ha-icon { --mdc-icon-size: 40px; width: 40px; height: 40px;
+          color: var(--nt-wx-color, var(--secondary-text-color)); }
         .nt-halo > * { fill: var(--nt-glow, transparent); opacity: var(--nt-glow-op, 0); transition: opacity 0.6s; }
         .nt-lens { fill: var(--nt-glow, transparent); opacity: var(--nt-lens-op, 0); transition: opacity 0.6s; }
         .nt-unavailable .nt-mod, .nt-unavailable .nt-value { opacity: 0.4; }
@@ -676,7 +790,7 @@ class NetatmoCard extends HTMLElement {
         <span id="nt-batt-pct"></span>
       </div>
       <div class="nt-wrap" id="nt-wrap">
-        <div class="nt-mod">${this._moduleSvg()}</div>
+        ${c.show_module === false ? "" : `<div class="nt-mod">${this._moduleSvg()}</div>`}
         <div class="nt-info">
           <div class="nt-name" id="nt-name"></div>
           <div class="nt-main">
@@ -686,6 +800,7 @@ class NetatmoCard extends HTMLElement {
           <div class="nt-label" id="nt-label"></div>
           <div class="nt-rows">${rows}</div>
         </div>
+        <div class="nt-weather" id="nt-weather" hidden></div>
       </div>
       ${c.show_history ? `
       <div class="nt-hist-toggle" id="nt-hist-toggle">
@@ -697,13 +812,18 @@ class NetatmoCard extends HTMLElement {
     this.appendChild(card);
 
     this._el = {};
-    const ids = ["nt-wrap", "nt-name", "nt-value", "nt-unit", "nt-trend", "nt-label", "nt-hist-toggle",
+    const ids = ["nt-wrap", "nt-name", "nt-value", "nt-unit", "nt-trend", "nt-label", "nt-hist-toggle", "nt-weather",
       "nt-hist", "nt-hist-label", "nt-hist-body", "nt-conn", "nt-conn-off", "nt-batt", "nt-batt-fill", "nt-batt-pct"];
     for (const m of NT_METRICS) ids.push("nt-row-" + m.key, "nt-val-" + m.key, "nt-ico-" + m.key);
     for (const id of ids) this._el[id] = card.querySelector("#" + id);
 
     if (c.clickable !== false) {
       this._el["nt-wrap"].addEventListener("click", () => this._moreInfo(this._config.entity));
+      this._el["nt-weather"].style.cursor = "pointer";
+      this._el["nt-weather"].addEventListener("click", (e) => {
+        e.stopPropagation();
+        this._moreInfo(this._config.weather_entity);
+      });
       for (const m of NT_METRICS) {
         const row = this._el["nt-row-" + m.key];
         if (!row) continue;
@@ -797,8 +917,35 @@ class NetatmoCard extends HTMLElement {
     }
 
     this._updateRows(t);
+    this._updateWeather();
     this._updateGlow();
     this._updateCorners();
+  }
+
+  // Rewritten only when the condition actually changes, so the icon is never torn out
+  // from under a click.
+  _updateWeather() {
+    const c = this._config;
+    const el = this._el["nt-weather"];
+    const st = c.weather_entity && this._hass.states[c.weather_entity];
+    if (!st) { el.hidden = true; this._wxKey = null; return; }
+    el.hidden = false;
+    const cond = String(st.state);
+    const mdi = `<ha-icon icon="${NT_WEATHER_MDI[cond] || "mdi:weather-cloudy"}"></ha-icon>`;
+    const key = (c.weather_icons === "mdi" ? "mdi:" : "drawn:") + cond;
+    if (this._wxKey !== key) {
+      this._wxKey = key;
+      el.innerHTML = c.weather_icons === "mdi" ? mdi : (ntWeatherSvg(cond, this._uid()) || mdi);
+    }
+    el.title = this._condLabel(st);
+  }
+
+  // Home Assistant already translates weather states, so borrow its wording when we can.
+  _condLabel(st) {
+    if (this._hass.formatEntityState) {
+      try { return this._hass.formatEntityState(st); } catch (e) { /* older frontend */ }
+    }
+    return st.state;
   }
 
   _updateRows(t) {
@@ -988,6 +1135,11 @@ class NetatmoCardEditor extends HTMLElement {
           if (v.co2_bad != null && v.co2_bad !== "" && parseFloat(v.co2_bad) !== 2000) out.co2_bad = parseFloat(v.co2_bad);
         }
         if (v.clickable === false) out.clickable = false;
+        if (v.show_module === false) out.show_module = false;
+        if (v.weather_entity) {
+          out.weather_entity = v.weather_entity;
+          if (v.weather_icons === "mdi") out.weather_icons = "mdi";
+        }
         if (NT_MAIN[kind].device_class === "temperature" && v.color_temperature === true) {
           out.color_temperature = true;
           if (v.temp_cold != null && v.temp_cold !== "" && parseFloat(v.temp_cold) !== 15) out.temp_cold = parseFloat(v.temp_cold);
@@ -1024,6 +1176,9 @@ class NetatmoCardEditor extends HTMLElement {
       show_glow: c.show_glow !== false,
       accent_color: c.accent_color || "#2f8fd0",
       clickable: c.clickable !== false,
+      show_module: c.show_module !== false,
+      weather_entity: c.weather_entity || "",
+      weather_icons: c.weather_icons === "mdi" ? "mdi" : "drawn",
       color_temperature: c.color_temperature === true,
       temp_cold: c.temp_cold != null ? c.temp_cold : 15,
       temp_hot: c.temp_hot != null ? c.temp_hot : 30,
@@ -1058,6 +1213,14 @@ class NetatmoCardEditor extends HTMLElement {
       { name: "label", label: t.label, selector: { text: {} } },
       ...NT_FIELDS[kind].filter(has).map((k) => ({ name: k, label: labels[k], selector: NT_SELECTOR[k] })),
       { name: "decimals", label: t.decimals, selector: { number: { mode: "box", step: 1, min: 0, max: 3 } } },
+      { name: "show_module", label: t.showModule, selector: { boolean: {} } },
+      { name: "weather_entity", label: t.weatherEnt, selector: { entity: { domain: "weather" } } },
+      ...(c.weather_entity ? [
+        { name: "weather_icons", label: t.weatherIcons, selector: { select: { mode: "dropdown", options: [
+          { value: "drawn", label: t.wiDrawn },
+          { value: "mdi", label: t.wiMdi },
+        ] } } },
+      ] : []),
       ...(NT_SHAPE[kind] ? [
         { name: "body_color", label: t.body, selector: { select: { mode: "dropdown", options: [
           { value: "aluminium", label: t.bodyAlu },

@@ -36,6 +36,8 @@ two glossy discs. The indoor grooves light up with air quality, like the real on
 - **Fill in from the device**: pick the temperature sensor and the editor offers one button that fills in humidity, CO₂, noise, pressure, battery and connectivity from the same device.
 - **Only the relevant options**: the editor shows a field when the module type has that reading *and* the device exposes it — no battery field on a mains-powered indoor station, no CO₂ / noise / pressure on the outdoor module. Every picker is narrowed to the matching `device_class`.
 - **Readings as tiles**: temperature in large type with its trend arrow, then humidity, CO₂, noise and pressure — each colored when it leaves the comfortable range, each opening its own more-info on tap.
+- **Current weather on the right**: point `weather_entity` at any Home Assistant weather entity and the condition shows as a coloured icon. All fifteen conditions are drawn inside the card, so there is nothing extra to install. Prefer your theme's flat look? `weather_icons: mdi` switches to the Material icons.
+- **No Netatmo? Hide the module**: `show_module: false` drops the drawing and keeps the readings, so the card works as a plain sensor card whatever hardware you run.
 - **Temperature colouring**: switch on `color_temperature` and the value turns blue at or below `temp_cold` and red at or above `temp_hot`, 15 and 30 by default, in whatever unit your sensor reports.
 - **Battery and connectivity** in the card corners (colored level, wifi icon crossed out in red when offline).
 - **Collapsible 24 h history**: `show_history` adds a discreet button that expands a 24 h curve of the temperature — or of any other sensor via `history_entity`.
@@ -100,6 +102,9 @@ label: Hallway
 | `show_glow` | `true` | Light up the groove with air quality (both indoor modules) |
 | `co2_good` | `1000` | Below this, the groove glows green (ppm) |
 | `co2_bad` | `2000` | Above this, the groove glows red (ppm) |
+| `weather_entity` | — | Current conditions drawn on the right, from any Home Assistant weather entity |
+| `weather_icons` | `drawn` | `drawn` for the card's own coloured icons, `mdi` for the flat Material ones |
+| `show_module` | `true` | Draw the module on the left; switch it off if you do not own a Netatmo |
 | `color_temperature` | `false` | Colour the temperature: blue when cold, red when hot (the three cylinders only) |
 | `temp_cold` | `15` | At or below this, the temperature shows blue, in the entity's own unit |
 | `temp_hot` | `30` | At or above this, the temperature shows red, in the entity's own unit |
