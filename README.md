@@ -36,6 +36,7 @@ two glossy discs. The indoor grooves light up with air quality, like the real on
 - **Fill in from the device**: pick the temperature sensor and the editor offers one button that fills in humidity, CO₂, noise, pressure, battery and connectivity from the same device.
 - **Only the relevant options**: the editor shows a field when the module type has that reading *and* the device exposes it — no battery field on a mains-powered indoor station, no CO₂ / noise / pressure on the outdoor module. Every picker is narrowed to the matching `device_class`.
 - **Readings as tiles**: temperature in large type with its trend arrow, then humidity, CO₂, noise and pressure — each colored when it leaves the comfortable range, each opening its own more-info on tap.
+- **Outdoor module, with the forecast**: that module only measures temperature and humidity, so `wind_entity` and `rain_forecast_entity` let you sit wind and announced rain beside them, from Météo-France or anywhere else. The rain tile hides itself when nothing is announced, and the wind tile carries its direction.
 - **Current weather on the right**: point `weather_entity` at any Home Assistant weather entity and the condition shows as a coloured icon. All fifteen conditions are drawn inside the card, so there is nothing extra to install. Prefer your theme's flat look? `weather_icons: mdi` switches to the Material icons.
 - **No Netatmo? Hide the module**: `show_module: false` drops the drawing and keeps the readings, so the card works as a plain sensor card whatever hardware you run.
 - **Temperature colouring**: switch on `color_temperature` and the value turns blue at or below `temp_cold` and red at or above `temp_hot`, 15 and 30 by default, in whatever unit your sensor reports.
@@ -93,7 +94,9 @@ label: Hallway
 | `rain_hour_entity` | — | Rain in the previous hour (rain gauge) |
 | `rain_rate_entity` | — | Rain since the last reading (rain gauge) |
 | `gust_entity` | — | Gust speed (anemometer) |
-| `wind_direction_entity` | — | Wind direction, drives the vane arrow (anemometer) |
+| `wind_entity` | — | Wind speed from a forecast, shown as a tile on the outdoor module |
+| `rain_forecast_entity` | — | Forecast rain on the outdoor module, the tile disappears when it is 0 |
+| `wind_direction_entity` | — | Wind direction: the vane arrow on the anemometer, a cardinal in front of the outdoor wind tile |
 | `trend_entity` | — | Temperature trend (`up` / `down`) → arrow next to the value |
 | `battery_entity` | — | Battery sensor shown top-right |
 | `connectivity_entity` | — | Connectivity sensor shown top-left |

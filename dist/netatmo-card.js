@@ -20,6 +20,7 @@ const NT_T = {
     trend: "Temperature trend entity", battery: "Battery entity", connectivity: "Connectivity entity",
     body: "Module finish", bodyAlu: "Aluminium", bodySand: "Sand", bodyMint: "Mint", bodyGraphite: "Graphite",
     glow: "Light up the groove with air quality (indoor)", accent: "Accent color (hex)", clickOpt: "Open more-info when tapped",
+    windEnt: "Wind speed entity (from a forecast)", rainFc: "Forecast rain entity, hidden at 0",
     weatherEnt: "Weather entity (current conditions)", weatherIcons: "Weather icon style",
     wiDrawn: "Drawn", wiMdi: "Material icons", showModule: "Show the module drawing",
     colorTemp: "Colour the temperature by threshold", tempCold: "Blue below (°)", tempHot: "Red above (°)",
@@ -40,6 +41,7 @@ const NT_T = {
     trend: "Entité tendance de la température", battery: "Entité batterie", connectivity: "Entité connectivité",
     body: "Finition du module", bodyAlu: "Aluminium", bodySand: "Sable", bodyMint: "Menthe", bodyGraphite: "Graphite",
     glow: "Allumer la fente selon la qualité de l'air (intérieur)", accent: "Couleur d'accent (hex)", clickOpt: "Ouvrir la fiche au clic",
+    windEnt: "Entité vitesse du vent (prévision)", rainFc: "Entité pluie annoncée, masquée à 0",
     weatherEnt: "Entité météo (temps actuel)", weatherIcons: "Style des icônes météo",
     wiDrawn: "Dessinées", wiMdi: "Icônes Material", showModule: "Afficher le dessin du module",
     colorTemp: "Colorer la température selon des seuils", tempCold: "Bleu en dessous de (°)", tempHot: "Rouge au-dessus de (°)",
@@ -60,6 +62,7 @@ const NT_T = {
     trend: "Entität Temperaturtrend", battery: "Batterie-Entität", connectivity: "Konnektivitäts-Entität",
     body: "Oberfläche des Moduls", bodyAlu: "Aluminium", bodySand: "Sand", bodyMint: "Mint", bodyGraphite: "Graphit",
     glow: "Schlitz nach Luftqualität leuchten lassen (innen)", accent: "Akzentfarbe (Hex)", clickOpt: "Beim Tippen die Detailansicht öffnen",
+    windEnt: "Windgeschwindigkeit (aus einer Vorhersage)", rainFc: "Regenvorhersage, bei 0 ausgeblendet",
     weatherEnt: "Wetter-Entität (aktuelles Wetter)", weatherIcons: "Stil der Wettersymbole",
     wiDrawn: "Gezeichnet", wiMdi: "Material-Symbole", showModule: "Modulzeichnung anzeigen",
     colorTemp: "Temperatur nach Schwellen einfärben", tempCold: "Blau unter (°)", tempHot: "Rot über (°)",
@@ -80,6 +83,7 @@ const NT_T = {
     trend: "Entidad de tendencia de temperatura", battery: "Entidad de batería", connectivity: "Entidad de conectividad",
     body: "Acabado del módulo", bodyAlu: "Aluminio", bodySand: "Arena", bodyMint: "Menta", bodyGraphite: "Grafito",
     glow: "Iluminar la ranura según la calidad del aire (interior)", accent: "Color de acento (hex)", clickOpt: "Abrir la ficha al tocar",
+    windEnt: "Entidad de velocidad del viento (previsión)", rainFc: "Entidad de lluvia prevista, oculta a 0",
     weatherEnt: "Entidad meteorológica (tiempo actual)", weatherIcons: "Estilo de los iconos del tiempo",
     wiDrawn: "Dibujados", wiMdi: "Iconos Material", showModule: "Mostrar el dibujo del módulo",
     colorTemp: "Colorear la temperatura por umbrales", tempCold: "Azul por debajo de (°)", tempHot: "Rojo por encima de (°)",
@@ -100,6 +104,7 @@ const NT_T = {
     trend: "Entità tendenza della temperatura", battery: "Entità batteria", connectivity: "Entità connettività",
     body: "Finitura del modulo", bodyAlu: "Alluminio", bodySand: "Sabbia", bodyMint: "Menta", bodyGraphite: "Grafite",
     glow: "Illumina la fessura secondo la qualità dell'aria (interno)", accent: "Colore d'accento (hex)", clickOpt: "Apri la scheda al tocco",
+    windEnt: "Entità velocità del vento (previsione)", rainFc: "Entità pioggia prevista, nascosta a 0",
     weatherEnt: "Entità meteo (tempo attuale)", weatherIcons: "Stile delle icone meteo",
     wiDrawn: "Disegnate", wiMdi: "Icone Material", showModule: "Mostra il disegno del modulo",
     colorTemp: "Colora la temperatura per soglie", tempCold: "Blu sotto (°)", tempHot: "Rosso sopra (°)",
@@ -120,6 +125,7 @@ const NT_T = {
     trend: "Entiteit temperatuurtrend", battery: "Batterij-entiteit", connectivity: "Connectiviteits-entiteit",
     body: "Afwerking van de module", bodyAlu: "Aluminium", bodySand: "Zand", bodyMint: "Mint", bodyGraphite: "Grafiet",
     glow: "Sleuf laten oplichten op luchtkwaliteit (binnen)", accent: "Accentkleur (hex)", clickOpt: "Meer-info openen bij tikken",
+    windEnt: "Windsnelheid-entiteit (uit een voorspelling)", rainFc: "Verwachte regen, verborgen bij 0",
     weatherEnt: "Weer-entiteit (huidig weer)", weatherIcons: "Stijl van de weerpictogrammen",
     wiDrawn: "Getekend", wiMdi: "Material-pictogrammen", showModule: "Moduletekening tonen",
     colorTemp: "Temperatuur kleuren op drempels", tempCold: "Blauw onder (°)", tempHot: "Rood boven (°)",
@@ -161,6 +167,8 @@ const NT_BODY = {
 
 const NT_METRICS = [
   { key: "humidity", cfg: "humidity_entity", icon: "mdi:water-percent", dec: 0 },
+  { key: "wind", cfg: "wind_entity", icon: "mdi:weather-windy", dec: 0 },
+  { key: "rain_forecast", cfg: "rain_forecast_entity", icon: "mdi:weather-pouring", dec: 1 },
   { key: "co2", cfg: "co2_entity", icon: "mdi:molecule-co2", dec: 0 },
   { key: "noise", cfg: "noise_entity", icon: "mdi:volume-high", dec: 0 },
   { key: "pressure", cfg: "pressure_entity", icon: "mdi:gauge", dec: 0, group: false },
@@ -187,7 +195,8 @@ const NT_FIELDS = {
   indoor: ["humidity_entity", "co2_entity", "noise_entity", "pressure_entity",
     "trend_entity", "battery_entity", "connectivity_entity"],
   indoor_extra: ["humidity_entity", "co2_entity", "trend_entity", "battery_entity", "connectivity_entity"],
-  outdoor: ["humidity_entity", "trend_entity", "battery_entity", "connectivity_entity"],
+  outdoor: ["humidity_entity", "wind_entity", "wind_direction_entity", "rain_forecast_entity",
+    "trend_entity", "battery_entity", "connectivity_entity"],
   rain: ["rain_hour_entity", "rain_rate_entity", "battery_entity", "connectivity_entity"],
   wind: ["gust_entity", "wind_direction_entity", "battery_entity", "connectivity_entity"],
 };
@@ -214,14 +223,21 @@ const NT_SELECTOR = {
   rain_rate_entity: { entity: { domain: "sensor", device_class: ["precipitation", "precipitation_intensity"] } },
   gust_entity: { entity: { domain: "sensor", device_class: "wind_speed" } },
   wind_direction_entity: { entity: { domain: "sensor", device_class: ["wind_direction", "enum"] } },
+  wind_entity: { entity: { domain: "sensor", device_class: "wind_speed" } },
+  rain_forecast_entity: { entity: { domain: "sensor", device_class: ["precipitation", "precipitation_intensity"] } },
 };
 
 function ntFieldLabels(t) {
   return { humidity_entity: t.humidity, co2_entity: t.co2, noise_entity: t.noise,
     pressure_entity: t.pressure, trend_entity: t.trend, battery_entity: t.battery,
     connectivity_entity: t.connectivity, rain_hour_entity: t.rainHour,
-    rain_rate_entity: t.rainRate, gust_entity: t.gust, wind_direction_entity: t.windDir };
+    rain_rate_entity: t.rainRate, gust_entity: t.gust, wind_direction_entity: t.windDir,
+    wind_entity: t.windEnt, rain_forecast_entity: t.rainFc };
 }
+
+// Readings that do not come from the module itself: a forecast, a weather service. The
+// editor must offer them even though the device exposes nothing of the sort.
+const NT_EXTERNAL = new Set(["wind_entity", "wind_direction_entity", "rain_forecast_entity"]);
 
 const NT_TREND_RE = /trend|tendance|tendenz|tendencia|tendenza/i;
 const NT_PRESS_RE = /pressure|pression|druck|presion|presión|pressione/i;
@@ -712,7 +728,9 @@ class NetatmoCard extends HTMLElement {
     card.style.setProperty("--nt-cursor", c.clickable === false ? "default" : "pointer");
     this._card = card;
 
-    const allowed = NT_FIELDS[this._kind()];
+    const kindNow = this._kind();
+    const allowed = NT_FIELDS[kindNow].filter(
+      (k) => !(kindNow === "outdoor" && k === "wind_direction_entity"));
     const rows = NT_METRICS.filter((m) => c[m.cfg] && allowed.includes(m.cfg)).map((m) => `
       <div class="nt-row" id="nt-row-${m.key}" data-entity="${c[m.cfg]}">
         <ha-icon icon="${m.icon}" id="nt-ico-${m.key}"></ha-icon>
@@ -738,6 +756,7 @@ class NetatmoCard extends HTMLElement {
         .nt-label { font-size: 0.85em; color: var(--secondary-text-color); }
         .nt-rows { display: grid; grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
           gap: 4px 8px; margin-top: 10px; }
+        .nt-row[hidden] { display: none !important; }
         .nt-row { display: grid; grid-template-columns: 18px minmax(0, 1fr);
           align-items: center; column-gap: 6px; min-width: 0; }
         .nt-row ha-icon { display: flex; align-items: center; justify-content: center;
@@ -961,10 +980,19 @@ class NetatmoCard extends HTMLElement {
         const a = ntWindAngle(st);
         txt = isNaN(a) ? "—"
           : (isNaN(n) ? "" : Math.round(a) + "° ") + t.dirs[Math.round(a / 45) % 8];
+      } else if (m.key === "wind") {
+        // Direction sits in front of the speed rather than in a tile of its own. That makes
+        // the line long, so it takes the whole row instead of being clipped in half a column.
+        const a = ntWindAngle(this._hass.states[c.wind_direction_entity]);
+        const card = isNaN(a) ? "" : t.dirs[Math.round(a / 45) % 8] + " ";
+        row.style.gridColumn = card ? "1 / -1" : "";
+        txt = isNaN(n) ? "—" : card + ntFmt(n, m.dec, m.group) + (unit ? " " + unit : "");
       } else {
         txt = isNaN(n) ? "—" : ntFmt(n, m.dec, m.group) + (unit ? " " + unit : "");
       }
       this._el["nt-val-" + m.key].textContent = txt;
+      // No rain announced, no tile.
+      if (m.key === "rain_forecast") row.hidden = !(n > 0);
       let color = "";
       let hint = "";
       if (m.key === "co2" && !isNaN(n)) {
@@ -1193,7 +1221,8 @@ class NetatmoCardEditor extends HTMLElement {
     const dev = ntDeviceFields(this._hass, c.entity, kind);
     // A field is offered when the module type has it AND the device exposes it
     // (or it is already set, so it stays clearable).
-    const has = (k) => NT_FIELDS[kind].includes(k) && (!!c[k] || !dev || dev.has(k));
+    const has = (k) => NT_FIELDS[kind].includes(k) &&
+      (NT_EXTERNAL.has(k) || !!c[k] || !dev || dev.has(k));
     const labels = ntFieldLabels(t);
     // The 24 h chart can only plot a reading this card already shows.
     const charted = [c.entity].concat(NT_FIELDS[kind].map((k) => c[k])).filter(Boolean);

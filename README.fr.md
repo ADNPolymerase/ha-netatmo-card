@@ -35,6 +35,7 @@ comme sur les vrais.
 - **Compléter depuis l'appareil** : choisissez le capteur de température et l'éditeur propose un bouton qui remplit humidité, CO₂, bruit, pression, batterie et connectivité depuis le même appareil.
 - **Uniquement les options pertinentes** : un champ n'apparaît que si le type de module possède cette mesure *et* que l'appareil expose l'entité — pas de batterie sur une station intérieure sur secteur, pas de CO₂ / bruit / pression sur le module extérieur. Chaque liste est filtrée sur le `device_class` correspondant.
 - **Mesures en tuiles** : température en gros avec sa flèche de tendance, puis humidité, CO₂, bruit et pression — chacune colorée hors de la plage de confort, chacune ouvrant sa fiche au clic.
+- **Module extérieur, avec la prévision** : ce module ne mesure que la température et l'humidité, alors `wind_entity` et `rain_forecast_entity` permettent d'y adjoindre le vent et la pluie annoncée, depuis Météo-France ou n'importe quelle autre source. La tuile pluie se masque quand rien n'est annoncé, et la tuile vent porte sa direction.
 - **Temps actuel à droite** : pointez `weather_entity` sur n'importe quelle entité météo de Home Assistant et la condition s'affiche en icône couleur. Les quinze conditions sont dessinées dans la card, il n'y a donc rien d'autre à installer. Vous préférez le rendu plat de votre thème ? `weather_icons: mdi` bascule sur les icônes Material.
 - **Pas de Netatmo ? Masquez le module** : `show_module: false` retire le dessin et garde les mesures, la card devient une simple card de capteurs quel que soit votre matériel.
 - **Température colorée** : activez `color_temperature` et la valeur passe en bleu à `temp_cold` ou en dessous, en rouge à `temp_hot` ou au-dessus, 15 et 30 par défaut, dans l'unité que remonte votre capteur.
@@ -94,7 +95,9 @@ label: Entrée
 | `rain_hour_entity` | — | Pluie de l'heure précédente (pluviomètre) |
 | `rain_rate_entity` | — | Pluie depuis le dernier relevé (pluviomètre) |
 | `gust_entity` | — | Force des rafales (anémomètre) |
-| `wind_direction_entity` | — | Direction du vent, pilote la flèche girouette (anémomètre) |
+| `wind_entity` | — | Vitesse du vent depuis une prévision, en tuile sur le module extérieur |
+| `rain_forecast_entity` | — | Pluie annoncée sur le module extérieur, la tuile disparaît à 0 |
+| `wind_direction_entity` | — | Direction du vent : la flèche girouette sur l'anémomètre, un point cardinal devant la tuile vent de l'extérieur |
 | `trend_entity` | — | Tendance de température (`up` / `down`) → flèche à côté de la valeur |
 | `battery_entity` | — | Capteur de batterie affiché en haut à droite |
 | `connectivity_entity` | — | Capteur de connectivité affiché en haut à gauche |
