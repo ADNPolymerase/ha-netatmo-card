@@ -1186,20 +1186,13 @@ class NetatmoCardEditor extends HTMLElement {
     }
 
     this._form.hass = this._hass;
+    const kind = NT_FIELDS[c.module_type] ? c.module_type : "indoor";
     const data = {
       entity: c.entity || "",
-      module_type: NT_FIELDS[c.module_type] ? c.module_type : "indoor",
+      module_type: kind,
       name: c.name || "",
       label: c.label || "",
-      humidity_entity: c.humidity_entity || "",
-      co2_entity: c.co2_entity || "",
-      noise_entity: c.noise_entity || "",
-      pressure_entity: c.pressure_entity || "",
-      trend_entity: c.trend_entity || "",
-      battery_entity: c.battery_entity || "",
-      connectivity_entity: c.connectivity_entity || "",
-      decimals: c.decimals != null ? c.decimals
-        : NT_MAIN[NT_FIELDS[c.module_type] ? c.module_type : "indoor"].dec,
+      decimals: c.decimals != null ? c.decimals : NT_MAIN[kind].dec,
       body_color: c.body_color || "aluminium",
       show_glow: c.show_glow !== false,
       accent_color: c.accent_color || "#2f8fd0",
@@ -1216,8 +1209,12 @@ class NetatmoCardEditor extends HTMLElement {
       history_entity: c.history_entity || "",
       language: c.language || "",
     };
+    // Every entity field of this module type, built from the same list the schema uses.
+    // This was a hand-written list once, and every field added since was missing from it:
+    // ha-form then reported those fields as undefined on the next edit, and the change
+    // handler dropped them from the configuration.
+    for (const k of NT_FIELDS[kind]) data[k] = c[k] || "";
     this._form.data = data;
-    const kind = data.module_type;
     const dev = ntDeviceFields(this._hass, c.entity, kind);
     // A field is offered when the module type has it AND the device exposes it
     // (or it is already set, so it stays clearable).
