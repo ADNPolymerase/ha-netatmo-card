@@ -726,6 +726,8 @@ class NetatmoCard extends HTMLElement {
     const card = document.createElement("ha-card");
     card.style.setProperty("--nt-accent", c.accent_color);
     card.style.setProperty("--nt-cursor", c.clickable === false ? "default" : "pointer");
+    card.style.setProperty("--nt-tile-min",
+      c.wind_entity && c.wind_direction_entity ? "112px" : "86px");
     this._card = card;
 
     const kindNow = this._kind();
@@ -754,8 +756,10 @@ class NetatmoCard extends HTMLElement {
           display: inline-flex; align-items: center; }
         .nt-trend svg { display: block; }
         .nt-label { font-size: 0.85em; color: var(--secondary-text-color); }
-        .nt-rows { display: grid; grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
-          gap: 4px 8px; margin-top: 10px; }
+        /* A wind tile carrying its direction needs a wider column, or the grid makes two
+           columns too narrow for it. Only the cards that show one pay for it. */
+        .nt-rows { display: grid; gap: 4px 8px; margin-top: 10px;
+          grid-template-columns: repeat(auto-fit, minmax(var(--nt-tile-min, 86px), 1fr)); }
         .nt-row[hidden] { display: none !important; }
         .nt-row { display: grid; grid-template-columns: 18px minmax(0, 1fr);
           align-items: center; column-gap: 6px; min-width: 0; }
@@ -981,11 +985,11 @@ class NetatmoCard extends HTMLElement {
         txt = isNaN(a) ? "—"
           : (isNaN(n) ? "" : Math.round(a) + "° ") + t.dirs[Math.round(a / 45) % 8];
       } else if (m.key === "wind") {
-        // Direction sits in front of the speed rather than in a tile of its own. That makes
-        // the line long, so it takes the whole row instead of being clipped in half a column.
+        // Direction sits in front of the speed rather than in a tile of its own. It stays in
+        // its half column: spanning the row looked tidy until the neighbouring tile was left
+        // hanging beside an empty cell.
         const a = ntWindAngle(this._hass.states[c.wind_direction_entity]);
         const card = isNaN(a) ? "" : t.dirs[Math.round(a / 45) % 8] + " ";
-        row.style.gridColumn = card ? "1 / -1" : "";
         txt = isNaN(n) ? "—" : card + ntFmt(n, m.dec, m.group) + (unit ? " " + unit : "");
       } else {
         txt = isNaN(n) ? "—" : ntFmt(n, m.dec, m.group) + (unit ? " " + unit : "");
