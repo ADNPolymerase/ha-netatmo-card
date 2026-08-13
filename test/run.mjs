@@ -359,4 +359,73 @@ check('l\'éditeur émet config-changed', ev?.type, 'config-changed');
 check('config-changed porte bien detail.config',
   ev?.detail?.config?.humidity_entity, 'sensor.h');
 
+// ── Editor rebuild: silent entity loss ───────────────────────────────────────
+// Home Assistant calls setConfig again after every config-changed the editor
+// emits. An editor that rebuilds its DOM each time recreates its pickers, and a
+// fresh picker can fire an empty value-changed before it knows its value, which
+// then overwrites the configured entity. The card must survive being re-fed its
+// own configuration.
+
+const CFG = { type: 'custom:netatmo-card', module_type: 'outdoor', entity: 'sensor.t',
+  humidity_entity: 'sensor.h', wind_entity: 'sensor.v' };
+const edKeep = mkEditor(CFG, { 'sensor.t': st(18, { device_class: 'temperature' }) });
+const formFirst = edKeep._form;
+const sentinel = { tag: 'sentinelle', markup: '<!--sentinelle-->' };
+edKeep.appendChild(sentinel);
+
+edKeep.setConfig({ ...CFG });   // l'écho que HA renvoie après un config-changed
+
+check('le DOM de l\'éditeur n\'est pas reconstruit à chaque setConfig',
+  edKeep.children.includes(sentinel), true);
+check('le formulaire reste le même objet', edKeep._form === formFirst, true);
+check('l\'entité principale survit à l\'écho', edKeep._form.data.entity, 'sensor.t');
+check('le vent survit à l\'écho', edKeep._form.data.wind_entity, 'sensor.v');
+check('l\'humidité survit à l\'écho', edKeep._form.data.humidity_entity, 'sensor.h');
+
+// Ten echoes in a row, as a dashboard editor session produces.
+for (let i = 0; i < 10; i++) edKeep.setConfig({ ...CFG });
+check('dix échos consécutifs : rien n\'est perdu',
+  [edKeep._form.data.entity, edKeep._form.data.wind_entity,
+   edKeep._form.data.humidity_entity].join('|'),
+  'sensor.t|sensor.v|sensor.h');
+check('dix échos consécutifs : le DOM tient toujours',
+  edKeep.children.includes(sentinel), true);
+
+// An empty value-changed must not wipe a configured entity unless the user has
+// actually touched the form. Clearing a picker involves a pointer or a key, so
+// the legitimate case still goes through.
+
+function echoEditor() {
+  const realCreate = globalThis.document.createElement;
+  globalThis.document.createElement = (tag) => {
+    const n = realCreate(tag);
+    n.addEventListener = (type, fn) => { (n._l = n._l || {})[type] = fn; };
+    return n;
+  };
+  const ed = mkEditor({ module_type: 'outdoor', entity: 'sensor.t',
+    humidity_entity: 'sensor.h', wind_entity: 'sensor.v' },
+    { 'sensor.t': st(18, { device_class: 'temperature' }) });
+  globalThis.document.createElement = realCreate;
+  return ed;
+}
+function echo(patch, touched) {
+  const ed = echoEditor();
+  if (touched) ed._touched = true;
+  ed._form._l['value-changed']({ detail: { value: { ...ed._form.data, ...patch } } });
+  return ed.events.at(-1)?.detail?.config || {};
+}
+
+check('écho vide non sollicité : l\'entité principale est gardée',
+  echo({ entity: '' }, false).entity, 'sensor.t');
+check('écho vide non sollicité : le vent est gardé',
+  echo({ wind_entity: '' }, false).wind_entity, 'sensor.v');
+check('écho identique : rien ne bouge',
+  echo({}, false).entity, 'sensor.t');
+check('champ vidé après une vraie interaction : le vide est accepté',
+  echo({ wind_entity: '' }, true).wind_entity, undefined);
+check('vrai changement, formulaire touché : la nouvelle valeur passe',
+  echo({ wind_entity: 'sensor.autre' }, true).wind_entity, 'sensor.autre');
+check('vrai changement sans interaction : la nouvelle valeur passe quand même',
+  echo({ wind_entity: 'sensor.autre' }, false).wind_entity, 'sensor.autre');
+
 report();

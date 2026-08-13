@@ -1137,14 +1137,23 @@ class NetatmoCardEditor extends HTMLElement {
       this.innerHTML = "";
       this._form = document.createElement("ha-form");
       this._form.computeLabel = (s) => s.label || s.name;
+      // A picker rebuilt by a schema change can report itself empty before it knows its
+      // value. Emptying a field is only believed once the user has actually touched the
+      // form, otherwise a configured entity would be wiped by an echo nobody asked for.
+      for (const evt of ["focusin", "pointerdown", "keydown"]) {
+        this.addEventListener(evt, () => { this._touched = true; }, { passive: true });
+      }
       this._form.addEventListener("value-changed", (ev) => {
         const v = ev.detail.value;
         const kind = NT_FIELDS[v.module_type] ? v.module_type : "indoor";
         const out = { type: "custom:netatmo-card", module_type: kind };
+        const keep = (k, val) =>
+          (!val && !this._touched && this._config && this._config[k]) ? this._config[k] : val;
         // A temperature sensor cannot be the main reading of a rain gauge.
-        const mainSt = v.entity && this._hass.states[v.entity];
+        const ent = keep("entity", v.entity);
+        const mainSt = ent && this._hass.states[ent];
         const wanted = NT_MAIN[kind].device_class;
-        if (v.entity && (!mainSt || mainSt.attributes.device_class === wanted)) out.entity = v.entity;
+        if (ent && (!mainSt || mainSt.attributes.device_class === wanted)) out.entity = ent;
         if (v.name) out.name = v.name;
         if (v.label) out.label = v.label;
         // Switching module type drops the readings the other one does not have. Pointing the
@@ -1153,7 +1162,7 @@ class NetatmoCardEditor extends HTMLElement {
         const moved = out.entity && out.entity !== (this._config && this._config.entity);
         const fresh = moved ? ntResolve(this._hass, out.entity, kind) : null;
         for (const k of NT_FIELDS[kind]) {
-          let val = v[k];
+          let val = keep(k, v[k]);
           if (moved && val && !ntSameDevice(this._hass, out.entity, val)) val = fresh[k] || "";
           if (val) out[k] = val;
         }
