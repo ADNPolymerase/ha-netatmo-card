@@ -4,7 +4,7 @@
 
 # Netatmo Card
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
+[![hacs_badge](https://img.shields.io/badge/HACS-Default-blue.svg)](https://github.com/hacs/default)
 [![GitHub Release](https://img.shields.io/github/v/release/ADNPolymerase/ha-netatmo-card?sort=semver)](https://github.com/ADNPolymerase/ha-netatmo-card/releases)
 [![HACS Action](https://github.com/ADNPolymerase/ha-netatmo-card/actions/workflows/hacs.yml/badge.svg)](https://github.com/ADNPolymerase/ha-netatmo-card/actions/workflows/hacs.yml)
 [![HA Version](https://img.shields.io/badge/Home%20Assistant-2024.1%2B-blue.svg)](https://www.home-assistant.io)
@@ -57,9 +57,12 @@ la flèche girouette fonctionne dans les deux cas.
 
 ## Installation (HACS)
 
-1. HACS → trois points → **Dépôts personnalisés**
-2. Ajouter `https://github.com/ADNPolymerase/ha-netatmo-card` en catégorie **Tableau de bord**
-3. Installer **Netatmo Card**, puis vider le cache du navigateur (Ctrl+Maj+R / Cmd+Maj+R)
+Disponible directement dans HACS — aucun dépôt personnalisé à ajouter.
+
+1. Ouvrir **HACS**, rechercher **Netatmo Card** et l'installer
+2. Rafraîchir le navigateur (Ctrl+Maj+R / Cmd+Maj+R)
+
+En dépôt personnalisé : HACS → trois points → **Dépôts personnalisés** → ajouter `https://github.com/ADNPolymerase/ha-netatmo-card` avec la catégorie **Tableau de bord**.
 
 Alternative manuelle : copier `netatmo-card.js` depuis la [dernière release](https://github.com/ADNPolymerase/ha-netatmo-card/releases) dans `config/www/`, puis ajouter `/local/netatmo-card.js` comme ressource module JavaScript.
 
