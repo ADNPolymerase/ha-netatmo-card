@@ -50,6 +50,34 @@ function withTiles(card, keys) {
   return card;
 }
 const tile = (c, k) => c._el['nt-val-' + k].textContent;
+
+/**
+ * Builds the card for real. The harness has no DOM, so the nodes _build() needs
+ * are dressed on the way out of createElement: a style that records custom
+ * properties, and a classList, which is how the card folds its chart.
+ */
+function classListStub() {
+  const set = new Set();
+  return { add: (c) => set.add(c), remove: (c) => set.delete(c),
+    contains: (c) => set.has(c), toggle: (c, on) => (on ? set.add(c) : set.delete(c)) };
+}
+function built(config, states = { 'sensor.t': st(18, { device_class: 'temperature' }) }) {
+  const realCreate = globalThis.document.createElement;
+  const dress = (n) => {
+    n.style = { setProperty(prop, value) { this[prop] = value; } };
+    n.classList = classListStub();
+    n.querySelector = () => dress(realCreate('div'));
+    return n;
+  };
+  globalThis.document.createElement = (tag) => dress(realCreate(tag));
+  const c = new Card();
+  c.setConfig({ type: 'custom:netatmo-card', module_type: 'indoor', entity: 'sensor.t', ...config });
+  // _loadHist is fire-and-forget, so record the call rather than chase the promise.
+  c._loadHist = function () { this._histAsked = true; };
+  c.hass = { states, locale: { language: 'fr' }, entities: {} };
+  globalThis.document.createElement = realCreate;
+  return c;
+}
 const tileColor = (c, k) => c._el['nt-row-' + k].style['--nt-row-color'];
 
 // ── Wind direction ───────────────────────────────────────────────────────────
@@ -295,6 +323,48 @@ const stale = mkCard({ module_type: 'indoor', entity: 'sensor.t' },
 contains('points tous antérieurs à la fenêtre : message, pas de courbe', stale, 'nt-hist-status');
 check('points hors fenêtre : aucun tracé produit', /<svg/.test(stale), false);
 
+// ── Module drawing size ──────────────────────────────────────────────────────
+// The drawing is what sets the height of the card, so a scale below 1 is the
+// only way to keep a card compact without hiding the module altogether. The
+// value reaches the layout as a custom property on ha-card: a light-DOM
+// <style> leaks between instances, so a width written in the stylesheet would
+// resize every card on the dashboard at once.
+
+const scaleOf = (v) =>
+  mkCard({ module_type: 'indoor', entity: 'sensor.t', module_scale: v })._config.module_scale;
+
+check('échelle absente : 1', scaleOf(undefined), 1);
+check('échelle lue telle quelle', scaleOf(0.7), 0.7);
+check('échelle en texte acceptée', scaleOf('0.8'), 0.8);
+check('échelle trop basse ramenée à la borne', scaleOf(0.05), 0.3);
+check('échelle trop haute ramenée à la borne', scaleOf(4), 1.5);
+check('échelle illisible ramenée à 1', scaleOf('grand'), 1);
+
+const modWidth = (cfg) => built(cfg)._card.style['--nt-mod-w'];
+check('largeur du dessin par défaut', modWidth({}), '92.0px');
+check('largeur du dessin à 0,7', modWidth({ module_scale: 0.7 }), '64.4px');
+check('largeur du dessin à 1,5', modWidth({ module_scale: 1.5 }), '138.0px');
+// The property is worthless if the stylesheet still hard-codes the width.
+contains('la feuille de style lit la largeur sur la carte',
+  built({})._card.innerHTML, 'width: var(--nt-mod-w');
+
+// ── 24 h chart folded or not ─────────────────────────────────────────────────
+// The panel is folded by a class, so the only thing that opens it by default is
+// posting that class at build time — and the chart has to be fetched there too,
+// since nothing else will ask for it.
+
+const hist = (cfg) => built({ show_history: true, ...cfg });
+check('tracé replié par défaut', !!hist({})._histOpen, false);
+check('tracé déplié sur demande', hist({ history_expanded: true })._histOpen, true);
+check('le panneau porte la classe ouverte',
+  hist({ history_expanded: true })._el['nt-hist'].classList.contains('nt-open'), true);
+check('le bouton porte la classe ouverte',
+  hist({ history_expanded: true })._el['nt-hist-toggle'].classList.contains('nt-open'), true);
+check('déplié par défaut : le tracé est demandé',
+  hist({ history_expanded: true })._histAsked, true);
+check('replié par défaut : rien n\'est demandé',
+  !!hist({})._histAsked, false);
+
 // ── Editor ───────────────────────────────────────────────────────────────────
 
 function mkEditor(config, states = {}) {
@@ -358,6 +428,18 @@ const ev = edFire.events.at(-1);
 check('l\'éditeur émet config-changed', ev?.type, 'config-changed');
 check('config-changed porte bien detail.config',
   ev?.detail?.config?.humidity_entity, 'sensor.h');
+
+// The two display options only show up where they mean something.
+check('éditeur : taille du dessin proposée',
+  names(mkEditor({ module_type: 'indoor', entity: 'sensor.t' })).includes('module_scale'), true);
+check('éditeur : pas de taille si le dessin est masqué',
+  names(mkEditor({ module_type: 'indoor', entity: 'sensor.t', show_module: false })).includes('module_scale'), false);
+check('éditeur : ouverture par défaut absente sans tracé',
+  names(mkEditor({ module_type: 'indoor', entity: 'sensor.t' })).includes('history_expanded'), false);
+check('éditeur : ouverture par défaut proposée avec le tracé',
+  names(mkEditor({ module_type: 'indoor', entity: 'sensor.t', show_history: true })).includes('history_expanded'), true);
+check('éditeur : la taille réglée revient dans le formulaire',
+  mkEditor({ module_type: 'indoor', entity: 'sensor.t', module_scale: 0.6 })._form.data.module_scale, 0.6);
 
 // ── Editor rebuild: silent entity loss ───────────────────────────────────────
 // Home Assistant calls setConfig again after every config-changed the editor
@@ -427,5 +509,18 @@ check('vrai changement, formulaire touché : la nouvelle valeur passe',
   echo({ wind_entity: 'sensor.autre' }, true).wind_entity, 'sensor.autre');
 check('vrai changement sans interaction : la nouvelle valeur passe quand même',
   echo({ wind_entity: 'sensor.autre' }, false).wind_entity, 'sensor.autre');
+
+check('taille 0,7 écrite dans la configuration',
+  echo({ module_scale: 0.7 }, true).module_scale, 0.7);
+check('taille 1 non écrite (valeur par défaut)',
+  echo({ module_scale: 1 }, true).module_scale, undefined);
+check('taille hors bornes ramenée avant d\'être écrite',
+  echo({ module_scale: 9 }, true).module_scale, 1.5);
+check('dessin masqué : la taille n\'est pas gardée',
+  echo({ show_module: false, module_scale: 0.7 }, true).module_scale, undefined);
+check('tracé déplié écrit avec le tracé',
+  echo({ show_history: true, history_expanded: true }, true).history_expanded, true);
+check('tracé déplié ignoré sans le tracé',
+  echo({ show_history: false, history_expanded: true }, true).history_expanded, undefined);
 
 report();

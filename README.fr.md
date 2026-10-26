@@ -37,10 +37,10 @@ comme sur les vrais.
 - **Mesures en tuiles** : température en gros avec sa flèche de tendance, puis humidité, CO₂, bruit et pression — chacune colorée hors de la plage de confort, chacune ouvrant sa fiche au clic.
 - **Module extérieur, avec la prévision** : ce module ne mesure que la température et l'humidité, alors `wind_entity` et `rain_forecast_entity` permettent d'y adjoindre le vent et la pluie annoncée, depuis Météo-France ou n'importe quelle autre source. La tuile pluie se masque quand rien n'est annoncé, et la tuile vent porte sa direction.
 - **Temps actuel à droite** : pointez `weather_entity` sur n'importe quelle entité météo de Home Assistant et la condition s'affiche en icône couleur. Les quinze conditions sont dessinées dans la card, il n'y a donc rien d'autre à installer. Vous préférez le rendu plat de votre thème ? `weather_icons: mdi` bascule sur les icônes Material.
-- **Pas de Netatmo ? Masquez le module** : `show_module: false` retire le dessin et garde les mesures, la card devient une simple card de capteurs quel que soit votre matériel.
+- **Pas de Netatmo ? Masquez le module** : `show_module: false` retire le dessin et garde les mesures, la card devient une simple card de capteurs quel que soit votre matériel. Ou gardez-le et réduisez-le avec `module_scale`, pour que le dessin ne rende plus la card plus haute que les mesures ne le demandent.
 - **Température colorée** : activez `color_temperature` et la valeur passe en bleu à `temp_cold` ou en dessous, en rouge à `temp_hot` ou au-dessus, 15 et 30 par défaut, dans l'unité que remonte votre capteur.
 - **Batterie et connectivité** dans les coins (niveau coloré, icône wifi barrée en rouge hors ligne).
-- **Tracé 24 h dépliable** : `show_history` ajoute un bouton discret qui déplie la courbe 24 h de la température — ou de n'importe quel autre capteur via `history_entity`.
+- **Tracé 24 h dépliable** : `show_history` ajoute un bouton discret qui déplie la courbe 24 h de la température — ou de n'importe quel autre capteur via `history_entity`. Ajoutez `history_expanded: true` pour qu'elle s'ouvre à chaque chargement de la card.
 - **Finitions** : aluminium, sable, menthe ou graphite.
 - Éditeur natif HA (sélecteurs d'entités) + contrôle complet en YAML.
 
@@ -112,12 +112,14 @@ label: Entrée
 | `weather_entity` | — | Temps actuel dessiné à droite, depuis n'importe quelle entité météo de Home Assistant |
 | `weather_icons` | `drawn` | `drawn` pour les icônes couleur de la card, `mdi` pour celles de Material |
 | `show_module` | `true` | Dessiner le module à gauche ; à couper si vous n'avez pas de Netatmo |
+| `module_scale` | `1` | Taille du dessin du module, de `0.3` à `1.5` ; sous 1 la card devient plus compacte |
 | `color_temperature` | `false` | Colorer la température : bleu quand il fait froid, rouge quand il fait chaud (les trois cylindres seulement) |
 | `temp_cold` | `15` | À cette valeur ou en dessous, la température s'affiche en bleu, dans l'unité de l'entité |
 | `temp_hot` | `30` | À cette valeur ou au-dessus, la température s'affiche en rouge, dans l'unité de l'entité |
 | `clickable` | `true` | Ouvrir la fiche de l'entité au clic sur la card ou une tuile |
 | `accent_color` | `#2f8fd0` | Couleur de la courbe 24 h |
 | `show_history` | `false` | Ajoute le bouton de tracé 24 h dépliable |
+| `history_expanded` | `false` | Ouvre le tracé 24 h par défaut ; le bouton le replie toujours |
 | `history_entity` | `entity` | Capteur tracé dans le graphe 24 h |
 | `language` | auto | `en`, `fr`, `de`, `es`, `it`, `nl` |
 

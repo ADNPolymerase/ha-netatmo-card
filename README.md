@@ -38,10 +38,10 @@ two glossy discs. The indoor grooves light up with air quality, like the real on
 - **Readings as tiles**: temperature in large type with its trend arrow, then humidity, CO₂, noise and pressure — each colored when it leaves the comfortable range, each opening its own more-info on tap.
 - **Outdoor module, with the forecast**: that module only measures temperature and humidity, so `wind_entity` and `rain_forecast_entity` let you sit wind and announced rain beside them, from Météo-France or anywhere else. The rain tile hides itself when nothing is announced, and the wind tile carries its direction.
 - **Current weather on the right**: point `weather_entity` at any Home Assistant weather entity and the condition shows as a coloured icon. All fifteen conditions are drawn inside the card, so there is nothing extra to install. Prefer your theme's flat look? `weather_icons: mdi` switches to the Material icons.
-- **No Netatmo? Hide the module**: `show_module: false` drops the drawing and keeps the readings, so the card works as a plain sensor card whatever hardware you run.
+- **No Netatmo? Hide the module**: `show_module: false` drops the drawing and keeps the readings, so the card works as a plain sensor card whatever hardware you run. Or keep it and shrink it with `module_scale`, so the drawing no longer makes the card taller than the readings need.
 - **Temperature colouring**: switch on `color_temperature` and the value turns blue at or below `temp_cold` and red at or above `temp_hot`, 15 and 30 by default, in whatever unit your sensor reports.
 - **Battery and connectivity** in the card corners (colored level, wifi icon crossed out in red when offline).
-- **Collapsible 24 h history**: `show_history` adds a discreet button that expands a 24 h curve of the temperature — or of any other sensor via `history_entity`.
+- **Collapsible 24 h history**: `show_history` adds a discreet button that expands a 24 h curve of the temperature — or of any other sensor via `history_entity`. Add `history_expanded: true` to have it open every time the card loads.
 - **Finishes**: aluminium, sand, mint or graphite.
 - Native HA editor (entity pickers) + full YAML control.
 
@@ -111,12 +111,14 @@ label: Hallway
 | `weather_entity` | — | Current conditions drawn on the right, from any Home Assistant weather entity |
 | `weather_icons` | `drawn` | `drawn` for the card's own coloured icons, `mdi` for the flat Material ones |
 | `show_module` | `true` | Draw the module on the left; switch it off if you do not own a Netatmo |
+| `module_scale` | `1` | Size of the module drawing, from `0.3` to `1.5`; below 1 the card gets more compact |
 | `color_temperature` | `false` | Colour the temperature: blue when cold, red when hot (the three cylinders only) |
 | `temp_cold` | `15` | At or below this, the temperature shows blue, in the entity's own unit |
 | `temp_hot` | `30` | At or above this, the temperature shows red, in the entity's own unit |
 | `clickable` | `true` | Open the more-info dialog when the card or a tile is tapped |
 | `accent_color` | `#2f8fd0` | Color of the 24 h curve |
 | `show_history` | `false` | Adds the collapsible 24 h history button |
+| `history_expanded` | `false` | Opens the 24 h chart by default; the button still folds it |
 | `history_entity` | `entity` | Sensor plotted in the 24 h chart |
 | `language` | auto | `en`, `fr`, `de`, `es`, `it`, `nl` |
 

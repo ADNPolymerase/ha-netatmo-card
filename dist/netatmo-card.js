@@ -1,4 +1,4 @@
-const CARD_VERSION = "1.1.0";
+const CARD_VERSION = "1.2.0";
 
 console.info(
   "%c NETATMO-CARD %c v" + CARD_VERSION + " ",
@@ -22,10 +22,10 @@ const NT_T = {
     glow: "Light up the groove with air quality (indoor)", accent: "Accent color (hex)", clickOpt: "Open more-info when tapped",
     windEnt: "Wind speed entity (from a forecast)", rainFc: "Forecast rain entity, hidden at 0",
     weatherEnt: "Weather entity (current conditions)", weatherIcons: "Weather icon style",
-    wiDrawn: "Drawn", wiMdi: "Material icons", showModule: "Show the module drawing",
+    wiDrawn: "Drawn", wiMdi: "Material icons", showModule: "Show the module drawing", modScale: "Module drawing size",
     colorTemp: "Colour the temperature by threshold", tempCold: "Blue below (°)", tempHot: "Red above (°)",
     co2Good: "CO₂ threshold — good (ppm)", co2Bad: "CO₂ threshold — poor (ppm)",
-    histOpt: "Show the 24 h history button", histEnt: "Charted entity (default: temperature)",
+    histOpt: "Show the 24 h history button", histOpen: "Open the 24 h history by default", histEnt: "Charted entity (default: temperature)",
     hist: "Last 24 h", noData: "No data",
     airGood: "Healthy air", airFair: "Stuffy air", airPoor: "Poor air",
     fillTitle: "Other sensors of this module were found.", fillBtn: "Fill in from the device",
@@ -43,10 +43,10 @@ const NT_T = {
     glow: "Allumer la fente selon la qualité de l'air (intérieur)", accent: "Couleur d'accent (hex)", clickOpt: "Ouvrir la fiche au clic",
     windEnt: "Entité vitesse du vent (prévision)", rainFc: "Entité pluie annoncée, masquée à 0",
     weatherEnt: "Entité météo (temps actuel)", weatherIcons: "Style des icônes météo",
-    wiDrawn: "Dessinées", wiMdi: "Icônes Material", showModule: "Afficher le dessin du module",
+    wiDrawn: "Dessinées", wiMdi: "Icônes Material", showModule: "Afficher le dessin du module", modScale: "Taille du dessin du module",
     colorTemp: "Colorer la température selon des seuils", tempCold: "Bleu en dessous de (°)", tempHot: "Rouge au-dessus de (°)",
     co2Good: "Seuil CO₂ — bon (ppm)", co2Bad: "Seuil CO₂ — mauvais (ppm)",
-    histOpt: "Afficher le bouton tracé 24 h", histEnt: "Entité tracée (défaut : température)",
+    histOpt: "Afficher le bouton tracé 24 h", histOpen: "Ouvrir le tracé 24 h par défaut", histEnt: "Entité tracée (défaut : température)",
     hist: "Dernières 24 h", noData: "Aucune donnée",
     airGood: "Air sain", airFair: "Air confiné", airPoor: "Air vicié",
     fillTitle: "D'autres capteurs de ce module ont été trouvés.", fillBtn: "Compléter depuis l'appareil",
@@ -64,10 +64,10 @@ const NT_T = {
     glow: "Schlitz nach Luftqualität leuchten lassen (innen)", accent: "Akzentfarbe (Hex)", clickOpt: "Beim Tippen die Detailansicht öffnen",
     windEnt: "Windgeschwindigkeit (aus einer Vorhersage)", rainFc: "Regenvorhersage, bei 0 ausgeblendet",
     weatherEnt: "Wetter-Entität (aktuelles Wetter)", weatherIcons: "Stil der Wettersymbole",
-    wiDrawn: "Gezeichnet", wiMdi: "Material-Symbole", showModule: "Modulzeichnung anzeigen",
+    wiDrawn: "Gezeichnet", wiMdi: "Material-Symbole", showModule: "Modulzeichnung anzeigen", modScale: "Größe der Modulzeichnung",
     colorTemp: "Temperatur nach Schwellen einfärben", tempCold: "Blau unter (°)", tempHot: "Rot über (°)",
     co2Good: "CO₂-Schwelle — gut (ppm)", co2Bad: "CO₂-Schwelle — schlecht (ppm)",
-    histOpt: "24-h-Verlauf-Button anzeigen", histEnt: "Dargestellte Entität (Standard: Temperatur)",
+    histOpt: "24-h-Verlauf-Button anzeigen", histOpen: "24-h-Verlauf standardmäßig geöffnet", histEnt: "Dargestellte Entität (Standard: Temperatur)",
     hist: "Letzte 24 h", noData: "Keine Daten",
     airGood: "Gute Luft", airFair: "Verbrauchte Luft", airPoor: "Schlechte Luft",
     fillTitle: "Weitere Sensoren dieses Moduls gefunden.", fillBtn: "Aus dem Gerät übernehmen",
@@ -85,10 +85,10 @@ const NT_T = {
     glow: "Iluminar la ranura según la calidad del aire (interior)", accent: "Color de acento (hex)", clickOpt: "Abrir la ficha al tocar",
     windEnt: "Entidad de velocidad del viento (previsión)", rainFc: "Entidad de lluvia prevista, oculta a 0",
     weatherEnt: "Entidad meteorológica (tiempo actual)", weatherIcons: "Estilo de los iconos del tiempo",
-    wiDrawn: "Dibujados", wiMdi: "Iconos Material", showModule: "Mostrar el dibujo del módulo",
+    wiDrawn: "Dibujados", wiMdi: "Iconos Material", showModule: "Mostrar el dibujo del módulo", modScale: "Tamaño del dibujo del módulo",
     colorTemp: "Colorear la temperatura por umbrales", tempCold: "Azul por debajo de (°)", tempHot: "Rojo por encima de (°)",
     co2Good: "Umbral CO₂ — bueno (ppm)", co2Bad: "Umbral CO₂ — malo (ppm)",
-    histOpt: "Mostrar el botón de historial 24 h", histEnt: "Entidad del gráfico (por defecto: temperatura)",
+    histOpt: "Mostrar el botón de historial 24 h", histOpen: "Abrir el historial 24 h por defecto", histEnt: "Entidad del gráfico (por defecto: temperatura)",
     hist: "Últimas 24 h", noData: "Sin datos",
     airGood: "Aire sano", airFair: "Aire cargado", airPoor: "Aire viciado",
     fillTitle: "Se han encontrado otros sensores de este módulo.", fillBtn: "Completar desde el dispositivo",
@@ -106,10 +106,10 @@ const NT_T = {
     glow: "Illumina la fessura secondo la qualità dell'aria (interno)", accent: "Colore d'accento (hex)", clickOpt: "Apri la scheda al tocco",
     windEnt: "Entità velocità del vento (previsione)", rainFc: "Entità pioggia prevista, nascosta a 0",
     weatherEnt: "Entità meteo (tempo attuale)", weatherIcons: "Stile delle icone meteo",
-    wiDrawn: "Disegnate", wiMdi: "Icone Material", showModule: "Mostra il disegno del modulo",
+    wiDrawn: "Disegnate", wiMdi: "Icone Material", showModule: "Mostra il disegno del modulo", modScale: "Dimensione del disegno del modulo",
     colorTemp: "Colora la temperatura per soglie", tempCold: "Blu sotto (°)", tempHot: "Rosso sopra (°)",
     co2Good: "Soglia CO₂ — buona (ppm)", co2Bad: "Soglia CO₂ — scarsa (ppm)",
-    histOpt: "Mostra il pulsante storico 24 h", histEnt: "Entità nel grafico (predefinito: temperatura)",
+    histOpt: "Mostra il pulsante storico 24 h", histOpen: "Apri lo storico 24 h all'avvio", histEnt: "Entità nel grafico (predefinito: temperatura)",
     hist: "Ultime 24 h", noData: "Nessun dato",
     airGood: "Aria salubre", airFair: "Aria viziata", airPoor: "Aria pessima",
     fillTitle: "Trovati altri sensori di questo modulo.", fillBtn: "Completa dal dispositivo",
@@ -127,10 +127,10 @@ const NT_T = {
     glow: "Sleuf laten oplichten op luchtkwaliteit (binnen)", accent: "Accentkleur (hex)", clickOpt: "Meer-info openen bij tikken",
     windEnt: "Windsnelheid-entiteit (uit een voorspelling)", rainFc: "Verwachte regen, verborgen bij 0",
     weatherEnt: "Weer-entiteit (huidig weer)", weatherIcons: "Stijl van de weerpictogrammen",
-    wiDrawn: "Getekend", wiMdi: "Material-pictogrammen", showModule: "Moduletekening tonen",
+    wiDrawn: "Getekend", wiMdi: "Material-pictogrammen", showModule: "Moduletekening tonen", modScale: "Grootte van de moduletekening",
     colorTemp: "Temperatuur kleuren op drempels", tempCold: "Blauw onder (°)", tempHot: "Rood boven (°)",
     co2Good: "CO₂-drempel — goed (ppm)", co2Bad: "CO₂-drempel — slecht (ppm)",
-    histOpt: "Toon de 24 u-geschiedenisknop", histEnt: "Weergegeven entiteit (standaard: temperatuur)",
+    histOpt: "Toon de 24 u-geschiedenisknop", histOpen: "24 u-geschiedenis standaard geopend", histEnt: "Weergegeven entiteit (standaard: temperatuur)",
     hist: "Afgelopen 24 u", noData: "Geen gegevens",
     airGood: "Gezonde lucht", airFair: "Bedompte lucht", airPoor: "Slechte lucht",
     fillTitle: "Andere sensoren van deze module gevonden.", fillBtn: "Aanvullen vanaf het apparaat",
@@ -248,6 +248,14 @@ const NT_GUST_RE = /gust|rafale|b(ö|oe)e|raffica|racha|windstoot/i;
 // enabled by default. Both are accepted; the enum is mapped back onto an angle.
 // All three cylinders are 45 mm across. Heights: 155 mm for the station, 92 mm for the
 // additional indoor module, 105 mm for the outdoor one.
+// The drawing sets the height of the card, so a smaller one keeps a card compact when the
+// readings alone would not need that much room. Clamped: below a third it is unreadable,
+// above 1.5 it dwarfs them.
+const ntModScale = (v) => {
+  const n = parseFloat(v);
+  return isNaN(n) ? 1 : Math.min(1.5, Math.max(0.3, n));
+};
+
 const NT_SHAPE = {
   indoor: { ratio: 3.44, slot: [0.175, 0.84] },
   indoor_extra: { ratio: 2.04, slot: [0.22, 0.78] },
@@ -461,6 +469,7 @@ class NetatmoCard extends HTMLElement {
       co2_bad: parseFloat(config.co2_bad) > 0 ? parseFloat(config.co2_bad) : 2000,
       body_color: NT_BODY[config.body_color] ? config.body_color : "aluminium",
       accent_color: config.accent_color || "#2f8fd0",
+      module_scale: ntModScale(config.module_scale),
     };
     this._built = false;
   }
@@ -728,6 +737,7 @@ class NetatmoCard extends HTMLElement {
     card.style.setProperty("--nt-cursor", c.clickable === false ? "default" : "pointer");
     card.style.setProperty("--nt-tile-min",
       c.wind_entity && c.wind_direction_entity ? "112px" : "86px");
+    card.style.setProperty("--nt-mod-w", (92 * c.module_scale).toFixed(1) + "px");
     this._card = card;
 
     const kindNow = this._kind();
@@ -744,7 +754,7 @@ class NetatmoCard extends HTMLElement {
         .nt-wrap { display: flex; align-items: stretch; gap: 10px; padding: 12px 16px 14px;
           cursor: var(--nt-cursor, pointer); }
         .nt-wrap.nt-corners { padding-top: 32px; }
-        .nt-mod { flex: none; width: 92px; }
+        .nt-mod { flex: none; width: var(--nt-mod-w, 92px); }
         .nt-mod svg { display: block; width: 100%; height: auto; overflow: visible; }
         .nt-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; }
         .nt-name { font-size: 1em; font-weight: 500; color: var(--primary-text-color);
@@ -856,6 +866,14 @@ class NetatmoCard extends HTMLElement {
     }
     if (this._el["nt-hist-toggle"]) {
       this._el["nt-hist-toggle"].addEventListener("click", (e) => { e.stopPropagation(); this._toggleHist(); });
+      // Opened by default. The panel is folded by a class, so posting it here is all it takes;
+      // hass is already in by the time _build runs, so the chart can be fetched straight away.
+      if (c.history_expanded === true) {
+        this._histOpen = true;
+        this._el["nt-hist-toggle"].classList.add("nt-open");
+        this._el["nt-hist"].classList.add("nt-open");
+        this._loadHist();
+      }
     }
   }
 
@@ -1177,6 +1195,9 @@ class NetatmoCardEditor extends HTMLElement {
         }
         if (v.clickable === false) out.clickable = false;
         if (v.show_module === false) out.show_module = false;
+        else if (v.module_scale != null && v.module_scale !== "" && parseFloat(v.module_scale) !== 1) {
+          out.module_scale = ntModScale(v.module_scale);
+        }
         if (v.weather_entity) {
           out.weather_entity = v.weather_entity;
           if (v.weather_icons === "mdi") out.weather_icons = "mdi";
@@ -1187,7 +1208,10 @@ class NetatmoCardEditor extends HTMLElement {
           if (v.temp_hot != null && v.temp_hot !== "" && parseFloat(v.temp_hot) !== 30) out.temp_hot = parseFloat(v.temp_hot);
         }
         if (v.accent_color && v.accent_color !== "#2f8fd0") out.accent_color = v.accent_color;
-        if (v.show_history) out.show_history = true;
+        if (v.show_history) {
+          out.show_history = true;
+          if (v.history_expanded) out.history_expanded = true;
+        }
         if (v.history_entity) out.history_entity = v.history_entity;
         if (v.language) out.language = v.language;
         this._config = out;
@@ -1211,6 +1235,7 @@ class NetatmoCardEditor extends HTMLElement {
       accent_color: c.accent_color || "#2f8fd0",
       clickable: c.clickable !== false,
       show_module: c.show_module !== false,
+      module_scale: c.module_scale != null ? c.module_scale : 1,
       weather_entity: c.weather_entity || "",
       weather_icons: c.weather_icons === "mdi" ? "mdi" : "drawn",
       color_temperature: c.color_temperature === true,
@@ -1219,6 +1244,7 @@ class NetatmoCardEditor extends HTMLElement {
       co2_good: c.co2_good != null ? c.co2_good : 1000,
       co2_bad: c.co2_bad != null ? c.co2_bad : 2000,
       show_history: c.show_history === true,
+      history_expanded: c.history_expanded === true,
       history_entity: c.history_entity || "",
       language: c.language || "",
     };
@@ -1253,6 +1279,10 @@ class NetatmoCardEditor extends HTMLElement {
       ...NT_FIELDS[kind].filter(has).map((k) => ({ name: k, label: labels[k], selector: NT_SELECTOR[k] })),
       { name: "decimals", label: t.decimals, selector: { number: { mode: "box", step: 1, min: 0, max: 3 } } },
       { name: "show_module", label: t.showModule, selector: { boolean: {} } },
+      ...(c.show_module === false ? [] : [
+        { name: "module_scale", label: t.modScale,
+          selector: { number: { mode: "slider", step: 0.05, min: 0.3, max: 1.5 } } },
+      ]),
       { name: "weather_entity", label: t.weatherEnt, selector: { entity: { domain: "weather" } } },
       ...(c.weather_entity ? [
         { name: "weather_icons", label: t.weatherIcons, selector: { select: { mode: "dropdown", options: [
@@ -1282,6 +1312,9 @@ class NetatmoCardEditor extends HTMLElement {
       { name: "clickable", label: t.clickOpt, selector: { boolean: {} } },
       { name: "accent_color", label: t.accent, selector: { text: {} } },
       { name: "show_history", label: t.histOpt, selector: { boolean: {} } },
+      ...(c.show_history === true ? [
+        { name: "history_expanded", label: t.histOpen, selector: { boolean: {} } },
+      ] : []),
       { name: "history_entity", label: t.histEnt, selector: { entity: { include_entities: charted } } },
       { name: "language", label: t.language, selector: { select: { mode: "dropdown", options:
         [{ value: "", label: t.auto }].concat(Object.keys(NT_LANGNAMES).map((l) => ({ value: l, label: NT_LANGNAMES[l] }))) } } },
