@@ -477,18 +477,24 @@ check('dix échos consécutifs : le DOM tient toujours',
 // actually touched the form. Clearing a picker involves a pointer or a key, so
 // the legitimate case still goes through.
 
-function echoEditor() {
+function echoEditor(cfg = { module_type: 'outdoor', entity: 'sensor.t',
+  humidity_entity: 'sensor.h', wind_entity: 'sensor.v' }) {
   const realCreate = globalThis.document.createElement;
   globalThis.document.createElement = (tag) => {
     const n = realCreate(tag);
     n.addEventListener = (type, fn) => { (n._l = n._l || {})[type] = fn; };
     return n;
   };
-  const ed = mkEditor({ module_type: 'outdoor', entity: 'sensor.t',
-    humidity_entity: 'sensor.h', wind_entity: 'sensor.v' },
-    { 'sensor.t': st(18, { device_class: 'temperature' }) });
+  const ed = mkEditor(cfg, { 'sensor.t': st(18, { device_class: 'temperature' }) });
   globalThis.document.createElement = realCreate;
   return ed;
+}
+// The form sends back a value without the field it no longer shows.
+function echoFrom(cfg, value) {
+  const ed = echoEditor(cfg);
+  ed._touched = true;
+  ed._form._l['value-changed']({ detail: { value } });
+  return ed.events.at(-1)?.detail?.config || {};
 }
 function echo(patch, touched) {
   const ed = echoEditor();
@@ -516,11 +522,21 @@ check('taille 1 non écrite (valeur par défaut)',
   echo({ module_scale: 1 }, true).module_scale, undefined);
 check('taille hors bornes ramenée avant d\'être écrite',
   echo({ module_scale: 9 }, true).module_scale, 1.5);
-check('dessin masqué : la taille n\'est pas gardée',
-  echo({ show_module: false, module_scale: 0.7 }, true).module_scale, undefined);
+check('dessin masqué : la taille est gardée pour le retour du dessin',
+  echo({ show_module: false, module_scale: 0.7 }, true).module_scale, 0.7);
+check('dessin masqué, curseur retiré du formulaire : la taille reste dans la configuration',
+  echoFrom({ module_type: 'indoor', entity: 'sensor.t', module_scale: 0.6 },
+    { module_type: 'indoor', entity: 'sensor.t', show_module: false }).module_scale, 0.6);
 check('tracé déplié écrit avec le tracé',
   echo({ show_history: true, history_expanded: true }, true).history_expanded, true);
-check('tracé déplié ignoré sans le tracé',
-  echo({ show_history: false, history_expanded: true }, true).history_expanded, undefined);
+check('tracé masqué : le dépliage est gardé pour le retour du tracé',
+  echo({ show_history: false, history_expanded: true }, true).history_expanded, true);
+check('tracé masqué, case retirée du formulaire : le dépliage reste dans la configuration',
+  echoFrom({ module_type: 'indoor', entity: 'sensor.t', show_history: true, history_expanded: true },
+    { module_type: 'indoor', entity: 'sensor.t' }).history_expanded, true);
+check('dépliage décoché : il disparaît de la configuration',
+  echo({ show_history: true, history_expanded: false }, true).history_expanded, undefined);
+check('sans tracé le bouton n\'existe pas, même avec le dépliage gardé',
+  JSON.stringify(hist({ show_history: false, history_expanded: true })).includes('id=\\"nt-hist-toggle'), false);
 
 report();

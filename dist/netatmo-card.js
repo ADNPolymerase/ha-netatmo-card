@@ -1194,10 +1194,12 @@ class NetatmoCardEditor extends HTMLElement {
           if (v.co2_bad != null && v.co2_bad !== "" && parseFloat(v.co2_bad) !== 2000) out.co2_bad = parseFloat(v.co2_bad);
         }
         if (v.clickable === false) out.clickable = false;
+        // The size and the opened chart are kept while their switch is off, so turning the
+        // drawing or the chart back on restores what was set rather than the default.
         if (v.show_module === false) out.show_module = false;
-        else if (v.module_scale != null && v.module_scale !== "" && parseFloat(v.module_scale) !== 1) {
-          out.module_scale = ntModScale(v.module_scale);
-        }
+        const scale = v.module_scale != null && v.module_scale !== "" ? v.module_scale
+          : this._config && this._config.module_scale;
+        if (scale != null && parseFloat(scale) !== 1) out.module_scale = ntModScale(scale);
         if (v.weather_entity) {
           out.weather_entity = v.weather_entity;
           if (v.weather_icons === "mdi") out.weather_icons = "mdi";
@@ -1208,10 +1210,10 @@ class NetatmoCardEditor extends HTMLElement {
           if (v.temp_hot != null && v.temp_hot !== "" && parseFloat(v.temp_hot) !== 30) out.temp_hot = parseFloat(v.temp_hot);
         }
         if (v.accent_color && v.accent_color !== "#2f8fd0") out.accent_color = v.accent_color;
-        if (v.show_history) {
-          out.show_history = true;
-          if (v.history_expanded) out.history_expanded = true;
-        }
+        if (v.show_history) out.show_history = true;
+        const expanded = v.history_expanded != null ? v.history_expanded
+          : this._config && this._config.history_expanded;
+        if (expanded === true) out.history_expanded = true;
         if (v.history_entity) out.history_entity = v.history_entity;
         if (v.language) out.language = v.language;
         this._config = out;
